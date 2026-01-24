@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      width: 220px;
+      padding: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+      font-size: 14px;
+    }
+    h1 {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 0 0 12px 0;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #e1e4e8;
+    }
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    .toggle {
+      position: relative;
+      width: 40px;
+      height: 22px;
+    }
+    .toggle input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: 0.2s;
+      border-radius: 22px;
+    }
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 16px;
+      width: 16px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.2s;
+      border-radius: 50%;
+    }
+    input:checked + .slider {
+      background-color: #2ea44f;
+    }
+    input:checked + .slider:before {
+      transform: translateX(18px);
+    }
+    .status {
+      margin-top: 8px;
+      font-size: 12px;
+      color: #666;
+    }
+    .divider {
+      border-top: 1px solid #e1e4e8;
+      margin: 12px 0;
+    }
+    .reset-btn {
+      width: 100%;
+      padding: 8px 12px;
+      font-size: 12px;
+      color: #cf222e;
+      background: none;
+      border: 1px solid #cf222e;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .reset-btn:hover {
+      background-color: #cf222e;
+      color: white;
+    }
+    .reset-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .help-text {
+      font-size: 11px;
+      color: #666;
+      margin-top: 4px;
+    }
+    .changelog {
+      margin-top: 12px;
+      padding-top: 12px;
+      border-top: 1px solid #e1e4e8;
+    }
+    .changelog-header {
+      font-size: 12px;
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 8px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .changelog-header:hover {
+      color: #333;
+    }
+    .changelog-arrow {
+      display: inline-block;
+      width: 0;
+      height: 0;
+      border-left: 4px solid transparent;
+      border-right: 4px solid transparent;
+      border-top: 5px solid currentColor;
+      transition: transform 0.2s;
+    }
+    .changelog-content {
+      display: none;
+      max-height: 150px;
+      overflow-y: auto;
+      font-size: 11px;
+      color: #666;
+    }
+    .changelog-content.expanded {
+      display: block;
+    }
+    .changelog-arrow.expanded {
+      transform: rotate(180deg);
+    }
+    .version {
+      margin-bottom: 8px;
+    }
+    .version-number {
+      font-weight: 600;
+      color: #333;
+    }
+    .version ul {
+      margin: 4px 0 0 0;
+      padding-left: 16px;
+    }
+    .version li {
+      margin-bottom: 2px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Actions Wrangler</h1>
+
+  <div class="toggle-row">
+    <span>Auto Unfold</span>
+    <label class="toggle">
+      <input type="checkbox" id="autoUnfold">
+      <span class="slider"></span>
+    </label>
+  </div>
+  <div class="help-text">Automatically expand all workflows on page load</div>
+
+  <div class="divider"></div>
+
+  <button class="reset-btn" id="resetBtn">Reset All Pinned Workflows</button>
+  <div class="help-text" style="margin-top: 8px;">Clears all extension-pinned workflows across all repos</div>
+
+  <div class="status" id="status"></div>
+
+  <div class="changelog">
+    <div class="changelog-header" id="changelogToggle">
+      <span>Changelog</span>
+      <span class="changelog-arrow" id="changelogArrow"></span>
+    </div>
+    <div class="changelog-content" id="changelogContent">
+      <div class="version">
+        <span class="version-number">v1.0</span>
+        <ul>
+          <li>Unlimited workflow pinning (star icon)</li>
+          <li>Instant pinned workflow placeholders</li>
+          <li>Manual unfold button</li>
+          <li>Auto unfold option</li>
+          <li>Automatic light/dark mode icons</li>
+          <li>Per-repository pin storage</li>
+          <li>Chrome sync support</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

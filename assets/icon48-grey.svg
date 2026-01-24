@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+  <!-- Capital A -->
+  <path fill="#9ca3af" d="M24 3L7 45h7l4-10h24l4 10h7L24 3zm0 12l8 20H16l8-20z"/>
+
+  <!-- Lasso rope loop -->
+  <ellipse cx="24" cy="21" rx="20" ry="14" fill="none" stroke="#9ca3af" stroke-width="3" stroke-linecap="round"/>
+
+  <!-- Lasso rope tail -->
+  <path fill="none" stroke="#9ca3af" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" d="M43 30 Q 48 36, 45 42 Q 42 47, 36 45"/>
+</svg>

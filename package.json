@@ -1,0 +1,34 @@
+{
+  "name": "actions-wrangler",
+  "version": "1.0.0",
+  "description": "Tame your GitHub Actions - pin unlimited workflows and quick-access your favorites",
+  "author": "kldavis4",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kldavis4/actions-wrangler.git"
+  },
+  "keywords": [
+    "chrome-extension",
+    "github",
+    "github-actions",
+    "workflows",
+    "productivity"
+  ],
+  "private": true,
+  "scripts": {
+    "build": "npm run build:js && npm run build:icons && npm run build:static",
+    "build:js": "esbuild src/content.ts src/background.ts src/popup.ts --bundle --outdir=dist --target=chrome100",
+    "build:icons": "make -C . icons",
+    "build:static": "cp manifest.json popup.html dist/",
+    "watch": "esbuild src/content.ts src/background.ts src/popup.ts --bundle --outdir=dist --target=chrome100 --watch",
+    "clean": "rm -rf dist",
+    "typecheck": "tsc --noEmit",
+    "package": "npm run build && cd dist && zip -r ../actions-wrangler.zip ."
+  },
+  "devDependencies": {
+    "@types/chrome": "^0.0.287",
+    "esbuild": "^0.24.0",
+    "typescript": "^5.7.0"
+  }
+}

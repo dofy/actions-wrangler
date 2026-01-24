@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
+  <!-- Capital A -->
+  <path fill="#9ca3af" d="M64 8L18 120h20l10-24h60l10 24h20L64 8zm0 32l20 48H44l20-48z"/>
+
+  <!-- Lasso rope loop -->
+  <ellipse cx="64" cy="56" rx="54" ry="38" fill="none" stroke="#9ca3af" stroke-width="7" stroke-linecap="round"/>
+
+  <!-- Lasso rope tail/handle -->
+  <path fill="none" stroke="#9ca3af" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M114 80 Q 128 95, 120 110 Q 112 122, 96 118"/>
+
+  <!-- Rope texture -->
+  <ellipse cx="64" cy="56" rx="54" ry="38" fill="none" stroke="#6b7280" stroke-width="2" stroke-dasharray="6 10" stroke-linecap="round"/>
+</svg>
