@@ -4,6 +4,8 @@
 
 A Chrome extension that helps you tame your GitHub Actions. Pin unlimited workflows beyond GitHub's 5-pin limit and get instant access to your favorites.
 
+![Actions Wrangler Screenshot](assets/screenshot.png)
+
 ## Features
 
 - **Unlimited Pinned Workflows** - Pin as many workflows as you need using the star icon (GitHub only allows 5)
@@ -104,20 +106,13 @@ actions-wrangler/
 - **storage** - Save pinned workflows and settings (synced via Chrome)
 - **tabs** - Update extension icon based on current page
 
-## Privacy
-
-This extension:
-- Does not collect any personal data
-- Does not make any external network requests
-- Only stores your pinned workflow preferences locally and via Chrome sync
-
 ## Contributing
 
 See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
 
 ## Privacy
 
-See [PRIVACY.md](PRIVACY.md) for our privacy policy. TL;DR: This extension doesn't collect any data.
+This extension does not collect any personal data. See [PRIVACY.md](PRIVACY.md) for details.
 
 ## License
 
