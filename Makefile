@@ -1,9 +1,14 @@
 SIZES = 16 48 128
 PNGS = $(SIZES:%=dist/icon%.png) $(SIZES:%=dist/icon%-grey.png) $(SIZES:%=dist/icon%-light.png) $(SIZES:%=dist/icon%-grey-light.png)
 
-all: icons
+all: icons promo
 
 icons: dist $(PNGS)
+
+promo: assets/promo-440x280.png
+
+assets/promo-440x280.png: assets/promo-440x280.svg
+	rsvg-convert -w 440 -h 280 $< -o $@
 
 dist:
 	mkdir -p dist
@@ -47,6 +52,6 @@ dist/icon128-grey-light.png: assets/icon128-grey-light.svg | dist
 	rsvg-convert -w 128 -h 128 $< -o $@
 
 clean:
-	rm -f $(PNGS)
+	rm -f $(PNGS) assets/promo-440x280.png
 
-.PHONY: all icons clean
+.PHONY: all icons promo clean
