@@ -7,11 +7,6 @@ interface PinnedWorkflow {
   href: string;
 }
 
-interface ItemToMove {
-  item: Element;
-  workflowId: string;
-}
-
 const FILLED_STAR = 'M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Z';
 const OUTLINE_STAR = 'M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.694Z';
 
@@ -56,33 +51,32 @@ function init(): void {
   let debounceTimer: ReturnType<typeof setTimeout> | null = null;
   const debouncedSetup = (): void => {
     if (debounceTimer) clearTimeout(debounceTimer);
-    debounceTimer = setTimeout(setupPinning, 50);
+    debounceTimer = setTimeout(() => {
+      if (!/^\/[^/]+\/[^/]+\/actions(?:\/|$)/.test(location.pathname)) return;
+      renderPinnedPlaceholders();
+      addUnfoldButton();
+      setupPinning();
+    }, 50);
   };
 
   const observer = new MutationObserver((mutations) => {
     const hasNewItems = mutations.some(m =>
       Array.from(m.addedNodes).some(n =>
         n.nodeType === 1 && (
-          (n as Element).matches?.('li.actions-workflow-list-item') ||
-          (n as Element).querySelector?.('li.actions-workflow-list-item')
+          (n as Element).matches?.('li.actions-workflow-list-item:not([data-unfold-placeholder])') ||
+          (n as Element).querySelector?.('li.actions-workflow-list-item:not([data-unfold-placeholder])')
         )
       )
     );
     if (hasNewItems) {
       debouncedSetup();
-      addUnfoldButton();
     }
   });
 
-  const startObserving = (): void => {
-    const pane = document.querySelector('[data-target="split-page-layout.pane"]');
-    if (pane) {
-      observer.observe(pane, { childList: true, subtree: true });
-    } else {
-      setTimeout(startObserving, 100);
-    }
-  };
-  startObserving();
+  // Turbo navigation replaces the sidebar itself, so observe a stable ancestor.
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  document.addEventListener('turbo:load', debouncedSetup);
+  document.addEventListener('turbo:frame-load', debouncedSetup);
 
   setTimeout(setupPinning, 100);
 
@@ -90,11 +84,6 @@ function init(): void {
     if (result.autoUnfold === true) {
       runExpander(() => {
         setupPinning();
-        try {
-          observer.disconnect();
-        } catch {
-          // Ignore
-        }
       });
     }
   });
@@ -193,7 +182,6 @@ async function renderPinnedPlaceholders(): Promise<void> {
     }
 
     if (!workflowList) return;
-    if (document.querySelector('.actions-unfold-placeholder')) return;
 
     const githubPinnedItems = workflowList.querySelectorAll('li.actions-workflow-list-item:has(.actions-unpin-button)');
     const insertAfter = githubPinnedItems.length > 0
@@ -202,6 +190,12 @@ async function renderPinnedPlaceholders(): Promise<void> {
 
     let lastInserted: Element | null = insertAfter;
     pinned.forEach(workflow => {
+      const existing = Array.from(workflowList.querySelectorAll('li.actions-workflow-list-item'))
+        .find(item => item.getAttribute('data-item-id') === workflow.id);
+      if (existing) {
+        lastInserted = existing;
+        return;
+      }
       const placeholder = createPlaceholderItem(workflow);
       if (lastInserted) {
         lastInserted.after(placeholder);
@@ -213,11 +207,6 @@ async function renderPinnedPlaceholders(): Promise<void> {
   };
 
   waitForList();
-}
-
-function removePlaceholderContainer(): void {
-  const placeholders = document.querySelectorAll('.actions-unfold-placeholder');
-  placeholders.forEach(p => p.remove());
 }
 
 function createPlaceholderItem(workflow: PinnedWorkflow): HTMLLIElement {
@@ -290,8 +279,6 @@ async function setupPinning(): Promise<void> {
   const list = workflowItems[0].parentElement;
   if (!list) return;
 
-  const itemsToMove: ItemToMove[] = [];
-
   workflowItems.forEach(item => {
     const workflowId = item.getAttribute('data-item-id');
     const link = item.querySelector('a.ActionListContent');
@@ -313,27 +300,27 @@ async function setupPinning(): Promise<void> {
     item.appendChild(pinButton);
 
     if (isPinned) {
-      itemsToMove.push({ item, workflowId });
+      // Only remove the placeholder whose real row has loaded. Other pins may
+      // still be hidden behind GitHub's "Show more workflows" pagination.
+      list.querySelectorAll('.actions-unfold-placeholder').forEach(placeholder => {
+        if (placeholder.getAttribute('data-item-id') === workflowId) placeholder.remove();
+      });
     }
   });
-
-  itemsToMove.sort((a, b) => pinnedIds.indexOf(a.workflowId) - pinnedIds.indexOf(b.workflowId));
 
   const githubPinnedItems = Array.from(list.querySelectorAll('li.actions-workflow-list-item'))
     .filter(item => item.querySelector('.actions-unpin-button'));
-  const insertAfter = githubPinnedItems[githubPinnedItems.length - 1];
-
-  itemsToMove.forEach(({ item }) => {
-    if (insertAfter) {
-      insertAfter.after(item);
-    } else {
-      list.prepend(item);
+  let insertAfter: Element | null = githubPinnedItems[githubPinnedItems.length - 1] || null;
+  pinnedIds.forEach(id => {
+    const item = Array.from(list.children).find(row => row.getAttribute('data-item-id') === id);
+    if (!item || item.querySelector('.actions-unpin-button')) return;
+    const next = insertAfter ? insertAfter.nextElementSibling : list.firstElementChild;
+    if (next !== item) {
+      if (insertAfter) insertAfter.after(item);
+      else list.prepend(item);
     }
+    insertAfter = item;
   });
-
-  if (itemsToMove.length > 0) {
-    removePlaceholderContainer();
-  }
 }
 
 async function togglePin(

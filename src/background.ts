@@ -2,8 +2,7 @@
 // Handles icon switching based on current URL and system theme
 
 const MATCH_PATTERNS = [
-  /^https:\/\/github\.com\/[^/]+\/[^/]+\/actions\/?$/,
-  /^https:\/\/github\.com\/[^/]+\/[^/]+\/actions\/workflows\/.*\.yml$/
+  /^https:\/\/github\.com\/[^/]+\/[^/]+\/actions(?:[/?#]|$)/
 ];
 
 let isDarkMode = false;
@@ -32,7 +31,7 @@ function getIconPath(isActive: boolean, darkMode: boolean): Record<string, strin
 }
 
 function updateIcon(tabId: number, url: string | undefined): void {
-  const isActive = url && isMatchingUrl(url);
+  const isActive = !!url && isMatchingUrl(url);
 
   chrome.action.setIcon({
     tabId,

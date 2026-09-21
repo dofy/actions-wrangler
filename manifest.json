@@ -8,8 +8,8 @@
     {
       "matches": [
         "https://github.com/*/*/actions",
-        "https://github.com/*/*/actions/",
-        "https://github.com/*/*/actions/workflows/*.yml"
+        "https://github.com/*/*/actions?*",
+        "https://github.com/*/*/actions/*"
       ],
       "js": ["content.js"],
       "run_at": "document_idle"
