@@ -8,6 +8,8 @@ A Chrome extension that helps you tame your GitHub Actions. Pin unlimited workfl
 
 ## Features
 
+- **Workflow Search** - Filter by workflow name or filename, ignoring case. The first search loads remaining workflow pages automatically; loading and incomplete results are clearly indicated. Press Escape or clear the field to restore the list.
+
 - **Unlimited Pinned Workflows** - Pin as many workflows as you need using the star icon (GitHub only allows 5)
 - **Instant Access** - Pinned workflows appear immediately when the page loads, before GitHub finishes loading the full list
 - **Manual Unfold** - Expand all workflows with one click using the unfold button next to "All workflows"

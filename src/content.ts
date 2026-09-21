@@ -1,3 +1,5 @@
+import { setupSearch, refreshSearch } from './search';
+
 // Actions Wrangler - Tame your GitHub Actions
 // Pin unlimited workflows and quick-access your favorites
 
@@ -102,6 +104,7 @@ function addUnfoldButton(): void {
 
     if (!allWorkflowsLink) return;
 
+    setupSearch(runExpander);
     const li = allWorkflowsLink.closest('li');
     if (!li || li.querySelector('.actions-unfold-trigger')) return;
 
@@ -204,6 +207,7 @@ async function renderPinnedPlaceholders(): Promise<void> {
       }
       lastInserted = placeholder;
     });
+    refreshSearch();
   };
 
   waitForList();
@@ -266,6 +270,7 @@ async function togglePinFromPlaceholder(workflowId: string, placeholderItem: HTM
     pinned.splice(index, 1);
     await savePinned(pinned);
     placeholderItem.remove();
+    refreshSearch();
   }
 }
 
@@ -321,6 +326,7 @@ async function setupPinning(): Promise<void> {
     }
     insertAfter = item;
   });
+  refreshSearch();
 }
 
 async function togglePin(
@@ -371,68 +377,53 @@ async function togglePin(
   await savePinned(pinned);
 }
 
-function runExpander(onComplete?: () => void): void {
-  const CLICK_INTERVAL = 500;
-  const MAX_ATTEMPTS = 100;
-  const CONFIRM_CHECKS = 3;
-  let attempts = 0;
-  let missedChecks = 0;
-  let scrollInterval: ReturnType<typeof setInterval> | null = null;
-  let pane: Element | null = null;
+// Share expansion between search, manual unfold, and auto-unfold.
+let expansion: { pane: Element; callbacks: Array<(complete: boolean) => void> } | null = null;
 
-  function startScrollLock(): void {
-    if (scrollInterval) return;
-    pane = document.querySelector('[data-target="split-page-layout.pane"]');
-    if (pane) {
-      pane.scrollTop = 0;
-      scrollInterval = setInterval(() => {
-        if (pane) pane.scrollTop = 0;
-      }, 10);
-    }
+function runExpander(onComplete?: (complete: boolean) => void): void {
+  const pane = document.querySelector('[data-target="split-page-layout.pane"]');
+  if (!pane) { onComplete?.(false); return; }
+  if (expansion?.pane === pane) {
+    if (onComplete) expansion.callbacks.push(onComplete);
+    return;
   }
-
-  function stopScrollLock(): void {
-    if (scrollInterval) {
-      clearInterval(scrollInterval);
-      scrollInterval = null;
+  const current = { pane, callbacks: onComplete ? [onComplete] : [] };
+  expansion = current;
+  const path = location.pathname;
+  const deadline = Date.now() + 30000;
+  let absentChecks = 0;
+  let clicked: HTMLButtonElement | undefined;
+  let rowsAtClick = 0;
+  const finish = (complete: boolean): void => {
+    if (expansion === current) expansion = null;
+    current.callbacks.forEach(callback => callback(complete));
+  };
+  const poll = (): void => {
+    if (!pane.isConnected || location.pathname !== path || expansion !== current) {
+      finish(false);
+      return;
     }
-  }
-
-  function findAndClickButton(): void {
-    pane = document.querySelector('[data-target="split-page-layout.pane"]');
-    const button = Array.from(document.querySelectorAll('button.ActionListContent'))
-      .find(el => {
-        if (!el.textContent?.includes('Show more workflows')) return false;
-        const rect = el.getBoundingClientRect();
-        return rect.width > 0 && rect.height > 0;
-      }) as HTMLButtonElement | undefined;
-
+    const rows = pane.querySelectorAll('li.actions-workflow-list-item:not([data-unfold-placeholder])').length;
+    const button = Array.from(pane.querySelectorAll<HTMLButtonElement>('button.ActionListContent'))
+      .find(el => el.textContent?.includes('Show more workflows'));
+    if (Date.now() >= deadline) { finish(false); return; }
     if (button) {
-      missedChecks = 0;
-      attempts++;
-      if (attempts > MAX_ATTEMPTS) {
-        stopScrollLock();
-        onComplete?.();
-        return;
+      absentChecks = 0;
+      // Wait for the previous request to add rows instead of clicking repeatedly.
+      if (!button.disabled && (button !== clicked || rows !== rowsAtClick)) {
+        clicked = button;
+        rowsAtClick = rows;
+        button.click();
       }
-
-      if (!scrollInterval) {
-        startScrollLock();
-      }
-
-      button.click();
+    } else if (clicked && rows === rowsAtClick) {
+      // A pending request may temporarily remove or relabel the load button.
+      absentChecks = 0;
+    } else if (++absentChecks >= 3) {
       setupPinning();
-      setTimeout(findAndClickButton, CLICK_INTERVAL);
-    } else {
-      missedChecks++;
-      if (missedChecks < CONFIRM_CHECKS) {
-        setTimeout(findAndClickButton, CLICK_INTERVAL);
-      } else {
-        stopScrollLock();
-        onComplete?.();
-      }
+      finish(true);
+      return;
     }
-  }
-
-  setTimeout(findAndClickButton, 1000);
+    setTimeout(poll, 500);
+  };
+  poll();
 }

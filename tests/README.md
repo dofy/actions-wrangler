@@ -39,3 +39,11 @@ profile, pin workflows with the extension stars, visit both `.yaml` and `.yml`
 workflow pages, refresh, and navigate back. Verify the stars and personal pins
 remain, including pins hidden behind "Show more workflows". Repeat with auto-unfold
 on and off.
+
+## Search regression
+
+In a fresh Playwright CLI session, run `tests/workflow-search.js` using the same
+`run-code` command above. It covers name and filename matching, case and whitespace,
+a delayed pagination response, no duplicate load requests, empty results, Escape
+to clear, sidebar replacement, repository changes, and incomplete-loading feedback.
+The existing navigation suite also checks that search does not break personal pins.
