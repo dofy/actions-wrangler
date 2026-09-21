@@ -390,7 +390,8 @@ function runExpander(onComplete?: (complete: boolean) => void): void {
   const current = { pane, callbacks: onComplete ? [onComplete] : [] };
   expansion = current;
   const path = location.pathname;
-  const deadline = Date.now() + 30000;
+  let deadline = Date.now() + 30000;
+  let lastPoll = Date.now();
   let absentChecks = 0;
   let clicked: HTMLButtonElement | undefined;
   let rowsAtClick = 0;
@@ -401,6 +402,15 @@ function runExpander(onComplete?: (complete: boolean) => void): void {
   const poll = (): void => {
     if (!pane.isConnected || location.pathname !== path || expansion !== current) {
       finish(false);
+      return;
+    }
+    const now = Date.now();
+    const elapsed = now - lastPoll;
+    lastPoll = now;
+    // Do not activate GitHub controls while the user is choosing IME candidates.
+    if (pane.querySelector('.actions-workflow-search input[data-composing="true"]')) {
+      deadline += elapsed;
+      setTimeout(poll, 500);
       return;
     }
     const rows = pane.querySelectorAll('li.actions-workflow-list-item:not([data-unfold-placeholder])').length;

@@ -57,3 +57,8 @@ wheel gesture is respected during loading. Run in a fresh CLI session as above.
 checks continued typing at the same caret, backward selections, blur to the body,
 async completion, and intentional pointer/Tab focus changes during loading.
 The unpatched search implementation fails its first focus assertion.
+
+`tests/workflow-search-ime.js` simulates composition events: no filtering or
+pagination until text is committed, IME Escape is not treated as clearing search,
+ongoing pagination pauses, and focus restoration does not run during composition.
+This covers browser event handling, not an end-to-end native OS candidate window.

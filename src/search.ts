@@ -28,12 +28,14 @@ export function setupSearch(expand: Expand): void {
   retry.hidden = true;
   wrapper.append(input, status, retry);
   all.after(wrapper);
+  let composing = false;
   let loading = false;
   let attempted = false;
   let complete = false;
   let timer: ReturnType<typeof setTimeout>;
 
   const filter = (): void => {
+    if (composing) return;
     const term = input.value.trim().toLocaleLowerCase();
     let count = 0;
     const pane = wrapper.closest('[data-target="split-page-layout.pane"]') || wrapper.parentElement?.parentElement;
@@ -54,7 +56,7 @@ export function setupSearch(expand: Expand): void {
     retry.hidden = !term || loading || complete || !attempted;
   };
   const load = (): void => {
-    if (!input.value.trim() || loading || complete || !wrapper.isConnected) return;
+    if (composing || !input.value.trim() || loading || complete || !wrapper.isConnected) return;
     attempted = true;
     loading = true;
     filter();
@@ -69,13 +71,28 @@ export function setupSearch(expand: Expand): void {
       filter();
     });
   };
-  input.addEventListener('input', () => {
+  input.addEventListener('compositionstart', () => {
+    composing = true;
+    input.dataset.composing = 'true';
+    clearTimeout(timer);
+  });
+  input.addEventListener('compositionend', () => {
+    composing = false;
+    delete input.dataset.composing;
+    updateQuery();
+  });
+  const updateQuery = (): void => {
     query = input.value;
     filter();
     clearTimeout(timer);
     if (!attempted) timer = setTimeout(load, 250);
+  };
+  input.addEventListener('input', event => {
+    if (composing || (event as InputEvent).isComposing) return;
+    updateQuery();
   });
   input.addEventListener('keydown', event => {
+    if (event.isComposing || event.keyCode === 229 || composing) return;
     if (event.key === 'Escape') {
       input.value = '';
       input.dispatchEvent(new Event('input'));
@@ -118,6 +135,7 @@ function preserveSearchPosition(search: HTMLElement): () => void {
     });
   };
   const onKey = (event: KeyboardEvent): void => {
+    if (event.isComposing || event.keyCode === 229) return;
     if (['PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown', 'Escape', 'Tab'].includes(event.key)) release();
   };
   document.addEventListener('scroll', restore, true);
@@ -147,7 +165,7 @@ function preserveSearchFocus(input: HTMLInputElement): () => void {
     const direction = input.selectionDirection;
     // Let GitHub finish its synchronous focus change before restoring the caret.
     queueMicrotask(() => {
-      if (!active) return;
+      if (!active || input.dataset.composing === 'true') return;
       if (!input.isConnected || location.pathname !== path) { release(); return; }
       input.focus({ preventScroll: true });
       if (start !== null && end !== null) input.setSelectionRange(start, end, direction || undefined);
@@ -157,6 +175,7 @@ function preserveSearchFocus(input: HTMLInputElement): () => void {
     if (event.target !== input) release();
   };
   const onKey = (event: KeyboardEvent): void => {
+    if (event.isComposing || event.keyCode === 229) return;
     if (event.key === 'Tab' || event.key === 'Escape') release();
   };
   input.addEventListener('blur', onBlur);
