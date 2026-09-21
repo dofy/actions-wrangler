@@ -58,7 +58,9 @@ export function setupSearch(expand: Expand): void {
     attempted = true;
     loading = true;
     filter();
+    const releaseScroll = preserveSearchPosition(wrapper);
     expand(ok => {
+      releaseScroll();
       if (!wrapper.isConnected) return;
       loading = false;
       complete = ok;
@@ -85,4 +87,41 @@ export function setupSearch(expand: Expand): void {
 
 export function refreshSearch(): void {
   document.querySelector('.actions-workflow-search')?.dispatchEvent(new Event('workflow-list-updated'));
+}
+
+// GitHub may scroll a load-more button into view after an async response.
+// Preserve each scroll container while loading, but yield immediately to the user.
+function preserveSearchPosition(search: HTMLElement): () => void {
+  const positions = new Map<HTMLElement, { top: number; left: number }>();
+  for (let node = search.parentElement; node; node = node.parentElement) {
+    if (node === document.scrollingElement || /(auto|scroll)/.test(getComputedStyle(node).overflowY)) {
+      positions.set(node, { top: node.scrollTop, left: node.scrollLeft });
+    }
+  }
+  let active = true;
+  const release = (): void => {
+    active = false;
+    document.removeEventListener('scroll', restore, true);
+    document.removeEventListener('wheel', release, true);
+    document.removeEventListener('touchstart', release, true);
+    document.removeEventListener('pointerdown', release, true);
+    document.removeEventListener('keydown', onKey, true);
+  };
+  const restore = (): void => {
+    if (!active) return;
+    if (!search.isConnected) { release(); return; }
+    positions.forEach(({ top, left }, node) => {
+      if (node.scrollTop !== top) node.scrollTop = top;
+      if (node.scrollLeft !== left) node.scrollLeft = left;
+    });
+  };
+  const onKey = (event: KeyboardEvent): void => {
+    if (['PageUp', 'PageDown', 'Home', 'End', 'ArrowUp', 'ArrowDown', 'Escape', 'Tab'].includes(event.key)) release();
+  };
+  document.addEventListener('scroll', restore, true);
+  document.addEventListener('wheel', release, { capture: true, passive: true });
+  document.addEventListener('touchstart', release, { capture: true, passive: true });
+  document.addEventListener('pointerdown', release, true);
+  document.addEventListener('keydown', onKey, true);
+  return release;
 }

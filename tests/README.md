@@ -47,3 +47,8 @@ In a fresh Playwright CLI session, run `tests/workflow-search.js` using the same
 a delayed pagination response, no duplicate load requests, empty results, Escape
 to clear, sidebar replacement, repository changes, and incomplete-loading feedback.
 The existing navigation suite also checks that search does not break personal pins.
+
+`tests/workflow-search-scroll.js` exercises nested sidebar and document scrolling
+triggered both on load-more click and after its async response. It verifies the
+search remains visible, normal scrolling resumes after loading, and a real user
+wheel gesture is respected during loading. Run in a fresh CLI session as above.
