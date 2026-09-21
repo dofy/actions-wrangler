@@ -1,121 +1,111 @@
 # Actions Wrangler
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/dofy/actions-wrangler)](https://github.com/dofy/actions-wrangler/releases/latest)
 
-A Chrome extension that helps you tame your GitHub Actions. Pin unlimited workflows beyond GitHub's 5-pin limit and get instant access to your favorites.
+Personal workflow pins and search for GitHub Actions. Find workflows by name or filename, keep your favorites near the top, and use them across Actions overview and workflow pages.
 
-![Actions Wrangler Screenshot](assets/screenshot.png)
+This is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Download this fork from [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest); the upstream Chrome Web Store listing is a separate distribution.
 
 ## Features
 
-- **Workflow Search** - Filter by workflow name or filename, ignoring case. The first search loads remaining workflow pages automatically; loading and incomplete results are clearly indicated. Press Escape or clear the field to restore the list.
+- **Personal pins:** Use the extension's orange stars to pin workflows without changing the repository's shared pins. No five-pin limit; preferences are saved per repository.
+- **Workflow search:** Match names or filenames, ignoring case. The first search loads remaining workflow pages automatically, with progress, match counts, incomplete-result feedback, and retry.
+- **Workflow-page support:** Personal pins work on `.yaml` and `.yml` workflow pages and are restored when GitHub replaces the sidebar during navigation.
+- **Pagination support:** Keep pinned shortcuts visible even when their real rows are behind “Show more workflows.”
+- **Input safeguards:** Preserve scroll position, typing focus, and selection during search loading; pause filtering and further pagination during IME composition.
+- **Manual and automatic expansion:** Expand the list with the button beside “All workflows,” or enable Auto Unfold in the popup.
+- **Chrome Sync:** Sync preferences across your devices when browser sync is enabled. This is not a strictly local-only storage mode.
 
-- **Unlimited Pinned Workflows** - Pin as many workflows as you need using the star icon (GitHub only allows 5)
-- **Instant Access** - Pinned workflows appear immediately when the page loads, before GitHub finishes loading the full list
-- **Manual Unfold** - Expand all workflows with one click using the unfold button next to "All workflows"
-- **Auto Unfold** - Optionally enable automatic expansion of all workflows on page load
-- **Per-Repository Pins** - Pins are stored separately for each repository
-- **Synced Settings** - Your pins sync across devices via Chrome sync
-- **Light/Dark Mode** - Icon automatically adapts to your system theme
+## Install
 
-## Installation
+### From a release — no build tools needed
 
-### From Chrome Web Store
+1. Download `actions-wrangler-vX.Y.Z.zip` from the [latest release](https://github.com/dofy/actions-wrangler/releases/latest).
+2. Extract it into a permanent directory. The selected directory must contain `manifest.json`.
+3. Open `chrome://extensions` and enable **Developer mode**.
+4. Click **Load unpacked** and select the extracted directory.
+5. Disable any other edition of Actions Wrangler, then refresh your GitHub tabs.
 
-Coming soon!
+Keep the extracted directory: Chrome loads the extension from those files. Release assets include `SHA256SUMS.txt` for checksum verification.
 
-### From Source
+### From source
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/kldavis4/actions-wrangler.git
-   cd actions-wrangler
-   ```
+Requires Node.js 18+, npm, and `rsvg-convert` for icon generation. On macOS, install the icon tool with `brew install librsvg`.
 
-2. Install dependencies and build:
-   ```bash
-   npm install
-   npm run build
-   ```
+```bash
+git clone https://github.com/dofy/actions-wrangler.git
+cd actions-wrangler
+npm ci
+npm run build
+```
 
-3. Open Chrome and navigate to `chrome://extensions/`
+Load the generated `dist` directory through **Load unpacked** in `chrome://extensions`.
 
-4. Enable "Developer mode" (toggle in top right)
+### Update an existing unpacked installation
 
-5. Click "Load unpacked"
+For release installations, replace the files in the same directory with the new ZIP contents. For source installations, update your checkout and rebuild:
 
-6. Select the `dist` folder
+```bash
+git pull --ff-only
+npm ci
+npm run build
+```
+
+Then click **Reload** on the extension card and refresh your GitHub tabs. Keep the same installation directory to preserve the unpacked extension's identity and saved preferences.
+
+The Web Store edition and this unpacked fork have separate storage. Personal pins are not automatically migrated between them.
 
 ## Usage
 
-### Pinning Workflows
+### Personal pins
 
-1. Navigate to any GitHub Actions page (`github.com/org/repo/actions`)
-2. Hover over a workflow to reveal the star icon
-3. Click the star to pin/unpin a workflow
-4. Pinned workflows (orange star) appear at the top of the list, after GitHub's native pins
+Open a repository's Actions page and click the extension's **star** beside a workflow. Orange stars indicate your personal pins, shown after GitHub's native shared pins. GitHub's **pin icon** still changes the repository's shared list.
 
-### Expanding All Workflows
+### Search
 
-- Click the unfold button next to "All workflows" to expand the full list
-- Or enable "Auto Unfold" in the extension popup to expand automatically on page load
+Type into **Search workflows…** below “All workflows.” Search matches both display names and workflow filenames, such as `admin`, `auth-service`, or `.yaml`.
 
-### Extension Popup
+- The first search expands the remaining pages. Until loading completes, counts may describe only the loaded subset.
+- If loading cannot finish, use **Retry loading** or GitHub's “Show more workflows” control.
+- Clear the field or press **Escape** to show the list again; personal pins remain saved.
+- The query is kept during sidebar replacement within a repository and resets when changing repositories. It is not saved across page reloads.
+- During IME composition, filtering and additional expansion wait until text is committed. Escape used by the input method does not clear the search.
 
-Click the extension icon to access:
-- **Auto Unfold** toggle - Enable/disable automatic workflow expansion
-- **Reset All Pinned Workflows** - Clear all extension pins across all repositories
+### Popup settings
 
-## Development
+- **Auto Unfold:** Automatically expand workflows when the extension initializes on an Actions page.
+- **Reset All Pinned Workflows:** Clear this extension's saved personal pins across repositories.
 
-### Scripts
-
-```bash
-npm run build      # Build for production
-npm run watch      # Watch mode for development
-npm run typecheck  # Run TypeScript type checking
-npm run package    # Create distributable zip file
-npm run clean      # Remove dist folder
-```
-
-### Building Icons
-
-If you modify the SVG icons, regenerate the PNGs:
+## Development and validation
 
 ```bash
-make clean && make
+npm run typecheck                   # TypeScript checks
+npm run build                       # Bundle scripts, generate icons, copy static files
+node --test tests/url-matching.cjs   # URL patterns and background-script checks
+npm run watch                       # Rebuild scripts on changes
+npm run package                     # Build and create actions-wrangler.zip
 ```
 
-Requires `rsvg-convert` (install via `brew install librsvg` on macOS).
+Browser regression scripts cover navigation, pinning, search, pagination, scrolling, focus, and IME events. See [tests/README.md](tests/README.md) for commands and scope.
 
-### Project Structure
+These tests use GitHub-shaped fixtures and mocked Chrome APIs. Native OS IME candidate windows have not been tested end-to-end. Already in-flight GitHub responses can still run during composition, and GitHub UI changes may require selector updates.
 
-```
-actions-wrangler/
-├── src/               # TypeScript source files
-│   ├── content.ts     # Main content script
-│   ├── background.ts  # Service worker
-│   └── popup.ts       # Popup script
-├── assets/            # SVG icons (source)
-├── dist/              # Built extension (generated)
-├── manifest.json      # Extension manifest
-├── popup.html         # Popup UI
-└── package.json       # Dependencies & scripts
-```
+## Permissions and privacy
 
-## Permissions
+- **storage:** Store personal pins and settings using Chrome Sync.
+- **tabs:** Update the extension icon for the current page.
+- **Content scripts:** Enhance repository Actions pages on `github.com`.
 
-- **storage** - Save pinned workflows and settings (synced via Chrome)
-- **tabs** - Update extension icon based on current page
+No GitHub token is required. Automatic expansion activates GitHub's existing “Show more workflows” control using your current browser session. See [PRIVACY.md](PRIVACY.md) for the upstream privacy policy.
 
-## Contributing
+## Upstream contributions
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup and guidelines.
+- [PR #1: Workflow-page pinning and Turbo navigation](https://github.com/kldavis4/actions-wrangler/pull/1)
+- [PR #2: Personal workflow search and input safeguards](https://github.com/kldavis4/actions-wrangler/pull/2)
 
-## Privacy
-
-This extension does not collect any personal data. See [PRIVACY.md](PRIVACY.md) for details.
+This fork's releases can include changes before upstream merges or publishes them. See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution guidelines.
 
 ## License
 
-MIT
+[MIT](LICENSE). Original project by Kelly Davis; this fork retains the upstream license and attribution.
