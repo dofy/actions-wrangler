@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Actions Wrangler",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Tame your GitHub Actions - pin unlimited workflows and quick-access your favorites",
   "homepage_url": "https://github.com/kldavis4/actions-wrangler",
   "content_scripts": [
@@ -11,7 +11,9 @@
         "https://github.com/*/*/actions?*",
         "https://github.com/*/*/actions/*"
       ],
-      "js": ["content.js"],
+      "js": [
+        "content.js"
+      ],
       "run_at": "document_idle"
     }
   ],
@@ -29,7 +31,10 @@
     "48": "icon48.png",
     "128": "icon128.png"
   },
-  "permissions": ["storage", "tabs"],
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
   "background": {
     "service_worker": "background.js"
   }
