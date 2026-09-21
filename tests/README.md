@@ -52,3 +52,8 @@ The existing navigation suite also checks that search does not break personal pi
 triggered both on load-more click and after its async response. It verifies the
 search remains visible, normal scrolling resumes after loading, and a real user
 wheel gesture is respected during loading. Run in a fresh CLI session as above.
+
+`tests/workflow-search-focus.js` reproduces load-more stealing input focus. It
+checks continued typing at the same caret, backward selections, blur to the body,
+async completion, and intentional pointer/Tab focus changes during loading.
+The unpatched search implementation fails its first focus assertion.

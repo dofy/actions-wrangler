@@ -59,7 +59,9 @@ export function setupSearch(expand: Expand): void {
     loading = true;
     filter();
     const releaseScroll = preserveSearchPosition(wrapper);
+    const releaseFocus = preserveSearchFocus(input);
     expand(ok => {
+      releaseFocus();
       releaseScroll();
       if (!wrapper.isConnected) return;
       loading = false;
@@ -123,5 +125,43 @@ function preserveSearchPosition(search: HTMLElement): () => void {
   document.addEventListener('touchstart', release, { capture: true, passive: true });
   document.addEventListener('pointerdown', release, true);
   document.addEventListener('keydown', onKey, true);
+  return release;
+}
+
+// Load-more handlers can focus a workflow link (or remove the focused button).
+// Only retain an existing typing session, never take focus on initial navigation.
+function preserveSearchFocus(input: HTMLInputElement): () => void {
+  if (document.activeElement !== input) return () => {};
+  const path = location.pathname;
+  let active = true;
+  const release = (): void => {
+    active = false;
+    input.removeEventListener('blur', onBlur);
+    document.removeEventListener('pointerdown', onPointer, true);
+    document.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('blur', release);
+  };
+  const onBlur = (): void => {
+    const start = input.selectionStart;
+    const end = input.selectionEnd;
+    const direction = input.selectionDirection;
+    // Let GitHub finish its synchronous focus change before restoring the caret.
+    queueMicrotask(() => {
+      if (!active) return;
+      if (!input.isConnected || location.pathname !== path) { release(); return; }
+      input.focus({ preventScroll: true });
+      if (start !== null && end !== null) input.setSelectionRange(start, end, direction || undefined);
+    });
+  };
+  const onPointer = (event: PointerEvent): void => {
+    if (event.target !== input) release();
+  };
+  const onKey = (event: KeyboardEvent): void => {
+    if (event.key === 'Tab' || event.key === 'Escape') release();
+  };
+  input.addEventListener('blur', onBlur);
+  document.addEventListener('pointerdown', onPointer, true);
+  document.addEventListener('keydown', onKey, true);
+  window.addEventListener('blur', release);
   return release;
 }
