@@ -1,6 +1,6 @@
 {
   "name": "actions-wrangler",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Tame your GitHub Actions - pin unlimited workflows and quick-access your favorites",
   "author": "kldavis4",
   "license": "MIT",

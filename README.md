@@ -3,13 +3,15 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/dofy/actions-wrangler)](https://github.com/dofy/actions-wrangler/releases/latest)
 
-Personal workflow pins and search for GitHub Actions. Find workflows by name or filename, keep your favorites near the top, and use them across Actions overview and workflow pages.
+Personal workflow pins and search for GitHub Actions. Find workflows by name or filename, keep your favorites in a separate top section, and use them across Actions overview and workflow pages.
 
 This is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Download this fork from [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest); the upstream Chrome Web Store listing is a separate distribution.
 
 ## Features
 
-- **Personal pins:** Use the extension's orange stars to pin workflows without changing the repository's shared pins. No five-pin limit; preferences are saved per repository.
+- **Personal favorites:** Use the gray star before each workflow name to save favorites without changing GitHub's native pins. No five-pin limit; preferences are saved per repository. Filled stars indicate favorites.
+- **Two-section layout:** Favorites appear above a divider. GitHub-native pins come first within each section; other favorites sort alphabetically, while workflows in the lower section keep GitHub's original order.
+- **Current GitHub sidebar:** Supports the updated Actions navigation, with aligned multiline names, native hover styling, and rounded outer edges.
 - **Workflow search:** Match names or filenames, ignoring case. The first search loads remaining workflow pages automatically, with progress, match counts, incomplete-result feedback, and retry.
 - **Workflow-page support:** Personal pins work on `.yaml` and `.yml` workflow pages and are restored when GitHub replaces the sidebar during navigation.
 - **Pagination support:** Keep pinned shortcuts visible even when their real rows are behind “Show more workflows.”
@@ -60,7 +62,14 @@ The Web Store edition and this unpacked fork have separate storage. Personal pin
 
 ### Personal pins
 
-Open a repository's Actions page and click the extension's **star** beside a workflow. Orange stars indicate your personal pins, shown after GitHub's native shared pins. GitHub's **pin icon** still changes the repository's shared list.
+Open a repository's Actions page and click the gray **star** before a workflow name. A filled star indicates a personal favorite; an outline indicates an unsaved workflow. GitHub's **pin icon** on the right retains its native behavior.
+
+The list has two sections separated by a line:
+
+- **Favorites at the top:** Workflows saved with the extension star. GitHub-native pins come first, followed by the remaining favorites sorted alphabetically by name.
+- **Other workflows below:** Workflows without an extension star. GitHub-native pins come first, and the remaining workflows retain GitHub's original order.
+
+Saving or removing a favorite moves it to the corresponding section immediately. The divider disappears when only one section has visible results, including during search.
 
 ### Search
 
@@ -87,7 +96,7 @@ npm run watch                       # Rebuild scripts on changes
 npm run package                     # Build and create actions-wrangler.zip
 ```
 
-Browser regression scripts cover navigation, pinning, search, pagination, scrolling, focus, and IME events. See [tests/README.md](tests/README.md) for commands and scope.
+Browser regression scripts cover the updated sidebar, section sorting, navigation, pinning, search, pagination, scrolling, focus, and IME events. See [tests/README.md](tests/README.md) for commands and scope.
 
 These tests use GitHub-shaped fixtures and mocked Chrome APIs. Native OS IME candidate windows have not been tested end-to-end. Already in-flight GitHub responses can still run during composition, and GitHub UI changes may require selector updates.
 

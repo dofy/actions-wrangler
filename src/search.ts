@@ -1,3 +1,4 @@
+import { WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows } from './sidebar';
 type Expand = (done: (complete: boolean) => void) => void;
 let query = '';
 let repository = '';
@@ -6,7 +7,7 @@ let repository = '';
 export function setupSearch(expand: Expand): void {
   const repo = location.pathname.split('/').slice(1, 3).join('/');
   if (repo !== repository) { repository = repo; query = ''; }
-  const all = document.querySelector('a.ActionListContent[href$="/actions"]')?.closest('li');
+  const all = getAllWorkflows()?.closest('li');
   if (!all || document.querySelector('.actions-workflow-search')) return;
   const wrapper = document.createElement('li');
   wrapper.className = 'actions-workflow-search';
@@ -38,17 +39,26 @@ export function setupSearch(expand: Expand): void {
     if (composing) return;
     const term = input.value.trim().toLocaleLowerCase();
     let count = 0;
-    const pane = wrapper.closest('[data-target="split-page-layout.pane"]') || wrapper.parentElement?.parentElement;
-    pane?.querySelectorAll<HTMLElement>('li.actions-workflow-list-item').forEach(row => {
-      const link = row.querySelector<HTMLAnchorElement>('a.ActionListContent');
+    const pane = getPane();
+    pane?.querySelectorAll<HTMLElement>(WORKFLOW_ROW).forEach(row => {
+      const link = row.querySelector<HTMLAnchorElement>(WORKFLOW_LINK);
       let filename = link?.pathname.split('/').pop() || '';
       try { filename = decodeURIComponent(filename); } catch { /* Keep malformed names searchable. */ }
       const match = !term || `${link?.textContent || ''} ${filename}`.toLocaleLowerCase().includes(term);
       row.hidden = !match;
       // GitHub's list styles can override the UA hidden rule.
-      if (match) row.style.removeProperty('display');
+      if (match) {
+        if (row.classList.contains('actions-wrangler-row')) row.style.display = 'flex';
+        else row.style.removeProperty('display');
+      }
       else row.style.setProperty('display', 'none', 'important');
       if (match) count++;
+    });
+    pane?.querySelectorAll<HTMLElement>('.actions-wrangler-divider').forEach(divider => {
+      const rows = Array.from(divider.parentElement?.querySelectorAll<HTMLElement>(WORKFLOW_ROW) || []);
+      const visible = (section: string): boolean => rows.some(row => !row.hidden && row.dataset.wranglerSection === section);
+      divider.hidden = !visible('favorites') || !visible('others');
+      divider.style.display = divider.hidden ? 'none' : 'block';
     });
     status.textContent = !term ? '' : loading ? `Loading all workflows… (${count} matches so far)`
       : !complete ? `${count} matches in loaded workflows. Full list unavailable.`

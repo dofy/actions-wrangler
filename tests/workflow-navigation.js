@@ -22,7 +22,7 @@ async (page) => {
     };
   }, { root });
   const inject = () => page.addScriptTag({ path: 'dist/content.js' });
-  const check = async (label, expected = ['native', 'alpha', 'beta', 'other']) => {
+  const check = async (label, expected = ['alpha', 'beta', 'native', 'other']) => {
     await page.waitForFunction(expected => {
       const rows = [...document.querySelectorAll('li.actions-workflow-list-item')];
       return JSON.stringify(rows.map(el => el.dataset.itemId)) === JSON.stringify(expected)
@@ -57,11 +57,11 @@ async (page) => {
   await page.getByRole('button', { name: 'Unpin beta (extension)', exact: true }).click();
   await page.reload();
   await inject();
-  await check('unpin persists after reload', ['native', 'alpha', 'other']);
+  await check('unpin persists after reload', ['alpha', 'native', 'other']);
   await page.getByRole('button', { name: 'Pin other (extension)', exact: true }).click();
   await page.reload();
   await inject();
-  await check('pin persists after reload', ['native', 'alpha', 'other']);
+  await check('pin persists after reload', ['alpha', 'other', 'native']);
   if (await page.getByRole('button', { name: 'Unpin other (extension)', exact: true }).count() !== 1) throw new Error('Pin was not saved');
   await page.goto('https://github.com/example/another/actions');
   await inject();

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Actions Wrangler",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Tame your GitHub Actions - pin unlimited workflows and quick-access your favorites",
   "homepage_url": "https://github.com/kldavis4/actions-wrangler",
   "content_scripts": [

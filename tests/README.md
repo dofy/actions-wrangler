@@ -31,7 +31,7 @@ Covered cases:
 - Repeated Turbo navigation without duplicate stars or unfold buttons.
 - Hidden pinned workflows retained while only some real rows are loaded.
 - Paginated real rows replacing only their corresponding placeholders.
-- Stable pin order after native GitHub pins.
+- Separate favorites and other workflows, with native GitHub pins first in each.
 - Pin/unpin persistence after reload and per-repository isolation.
 
 For a manual extension smoke test, load `dist/` unpacked in a separate Chrome
@@ -62,3 +62,13 @@ The unpatched search implementation fails its first focus assertion.
 pagination until text is committed, IME Escape is not treated as clearing search,
 ongoing pagination pauses, and focus restoration does not run during composition.
 This covers browser event handling, not an end-to-end native OS candidate window.
+
+`tests/workflow-modern-layout.js` covers the semantic Actions workflows navigation,
+nested workflow groups without legacy CSS classes or numeric IDs, migration of
+old numeric pins by workflow URL, Show more pagination, search, pin/unpin
+persistence, native pin order, and React sidebar replacement. It is a fixture
+regression; authenticated live Chrome testing is still required.
+
+`tests/workflow-sections.js` checks alphabetical favorites, native pin priority in
+both regions, restoring the original order after unpinning, and hiding the divider
+when search or an empty favorites region leaves only one visible region.
