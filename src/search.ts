@@ -12,13 +12,38 @@ export function setupSearch(expand: Expand): void {
   const wrapper = document.createElement('li');
   wrapper.className = 'actions-workflow-search';
   wrapper.style.cssText = 'list-style:none;padding:8px;';
+  const field = document.createElement('div');
+  field.style.position = 'relative';
   const input = document.createElement('input');
   input.type = 'search';
   input.className = 'form-control';
   input.placeholder = 'Search workflows…';
   input.setAttribute('aria-label', 'Search workflows by name or filename');
-  input.style.width = '100%';
+  input.style.cssText = 'width:100%;padding-right:56px;';
   input.value = query;
+  const clear = document.createElement('button');
+  clear.type = 'button';
+  clear.className = 'actions-workflow-search-clear';
+  clear.textContent = 'Esc';
+  clear.setAttribute('aria-label', 'Clear workflow search');
+  clear.title = 'Clear search (Esc)';
+  const styles = document.createElement('style');
+  styles.textContent = `
+    .actions-workflow-search input::-webkit-search-cancel-button { display: none; }
+    .actions-workflow-search-clear {
+      position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+      padding: 0 5px; height: 22px; border: 1px solid var(--borderColor-default, #d1d9e0);
+      border-radius: 4px; background: var(--bgColor-muted, #f6f8fa);
+      color: var(--fgColor-muted, #656d76); font: inherit; font-size: 11px; cursor: pointer;
+    }
+    .actions-workflow-search-clear:hover:not(:disabled) {
+      background: var(--control-transparent-bgColor-hover, rgba(129, 139, 152, .1));
+      color: var(--fgColor-default, #1f2328);
+    }
+    .actions-workflow-search-clear:disabled { opacity: .5; cursor: default; }
+    .actions-workflow-search-clear:focus-visible { outline: 2px solid var(--focus-outlineColor, #0969da); outline-offset: 1px; }
+  `;
+  field.append(input, clear);
   const status = document.createElement('div');
   status.setAttribute('role', 'status');
   status.style.cssText = 'font-size:12px;color:var(--fgColor-muted, #656d76);margin-top:4px;';
@@ -27,7 +52,7 @@ export function setupSearch(expand: Expand): void {
   retry.className = 'btn btn-sm';
   retry.textContent = 'Retry loading';
   retry.hidden = true;
-  wrapper.append(input, status, retry);
+  wrapper.append(styles, field, status, retry);
   all.after(wrapper);
   let composing = false;
   let loading = false;
@@ -36,6 +61,7 @@ export function setupSearch(expand: Expand): void {
   let timer: ReturnType<typeof setTimeout>;
 
   const filter = (): void => {
+    clear.disabled = composing || !input.value;
     if (composing) return;
     const term = input.value.trim().toLocaleLowerCase();
     let count = 0;
@@ -84,6 +110,7 @@ export function setupSearch(expand: Expand): void {
   input.addEventListener('compositionstart', () => {
     composing = true;
     input.dataset.composing = 'true';
+    clear.disabled = true;
     clearTimeout(timer);
   });
   input.addEventListener('compositionend', () => {
@@ -101,11 +128,17 @@ export function setupSearch(expand: Expand): void {
     if (composing || (event as InputEvent).isComposing) return;
     updateQuery();
   });
+  const clearSearch = (): void => {
+    input.value = '';
+    updateQuery();
+    input.focus({ preventScroll: true });
+  };
+  clear.addEventListener('click', clearSearch);
   input.addEventListener('keydown', event => {
     if (event.isComposing || event.keyCode === 229 || composing) return;
     if (event.key === 'Escape') {
-      input.value = '';
-      input.dispatchEvent(new Event('input'));
+      event.preventDefault();
+      clearSearch();
     }
   });
   retry.addEventListener('click', load);
