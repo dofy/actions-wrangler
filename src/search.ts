@@ -19,7 +19,7 @@ export function setupSearch(expand: Expand): void {
   input.className = 'form-control';
   input.placeholder = 'Search workflows…';
   input.setAttribute('aria-label', 'Search workflows by name or filename');
-  input.style.cssText = 'width:100%;padding-right:56px;';
+  input.style.width = '100%';
   input.value = query;
   const clear = document.createElement('button');
   clear.type = 'button';
@@ -30,6 +30,7 @@ export function setupSearch(expand: Expand): void {
   const styles = document.createElement('style');
   styles.textContent = `
     .actions-workflow-search input::-webkit-search-cancel-button { display: none; }
+    .actions-workflow-search-clear[hidden] { display: none; }
     .actions-workflow-search-clear {
       position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
       padding: 0 5px; height: 22px; border: 1px solid var(--borderColor-default, #d1d9e0);
@@ -61,6 +62,8 @@ export function setupSearch(expand: Expand): void {
   let timer: ReturnType<typeof setTimeout>;
 
   const filter = (): void => {
+    clear.hidden = !input.value;
+    input.style.paddingRight = clear.hidden ? '' : '56px';
     clear.disabled = composing || !input.value;
     if (composing) return;
     const term = input.value.trim().toLocaleLowerCase();

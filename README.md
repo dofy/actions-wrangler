@@ -77,7 +77,7 @@ Type into **Search workflows…** below “All workflows.” Search matches both
 
 - The first search expands the remaining pages. Until loading completes, counts may describe only the loaded subset.
 - If loading cannot finish, use **Retry loading** or GitHub's “Show more workflows” control.
-- Click **Esc** at the right of the search field or press **Escape** to clear the query and show the list again; personal pins remain saved. The button is disabled when the field is empty, and clearing keeps focus in the search field.
+- Click **Esc** at the right of the search field or press **Escape** to clear the query and show the list again; personal pins remain saved. The button is hidden when the field is empty, and clearing keeps focus in the search field.
 - The query is kept during sidebar replacement within a repository and resets when changing repositories. It is not saved across page reloads.
 - During IME composition, filtering and additional expansion wait until text is committed. Escape used by the input method does not clear the search.
 

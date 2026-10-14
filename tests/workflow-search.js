@@ -45,7 +45,7 @@ async (page) => {
   await clear.click();
   await visible(['1', '2', '3']);
   if (await input.inputValue() !== '' || !await input.evaluate(el => el === document.activeElement)) throw new Error('Click clear lost value or input focus');
-  if (!await clear.isDisabled()) throw new Error('Empty search clear button should be disabled');
+  if (await clear.isVisible()) throw new Error('Empty search clear button should be hidden');
   if (await page.getByRole('status').innerText()) throw new Error('Click clear left stale results');
   await input.fill('missing');
   await input.press('Escape');
