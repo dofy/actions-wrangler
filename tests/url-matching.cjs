@@ -23,7 +23,7 @@ for (const suffix of ['', '/', '?query=branch%3Amain', '/workflows/build.yml', '
 }
 test('unrelated URLs keep inactive icon', () => {
   for (const url of ['https://github.com/example/repo/pulls', 'https://github.com/example/repo/actions-other', 'https://example.com/example/repo/actions']) {
-    assert.ok(!matches.some(pattern => pattern.test(url)));
+    assert.equal(matches.some(pattern => pattern.test(url)), url.startsWith('https://github.com/'));
     onUpdated(1, { url }, { url });
     assert.equal(icon.path[16], 'icon16-grey.png');
   }

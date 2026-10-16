@@ -129,6 +129,7 @@ actions-wrangler/
 
 - **storage** - Save pinned workflows and settings (synced via Chrome)
 - **tabs** - Update extension icon based on current page
+- **Content scripts** - Load a lightweight entry listener on `github.com` so navigation into Actions works without refreshing. The interface starts only on repository Actions pages.
 
 ## Contributing
 

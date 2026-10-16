@@ -26,8 +26,22 @@ const UNFOLD_ICON = `
 
 // Initialize
 (function() {
-  initThemeDetection();
-  init();
+  let initialized = false;
+  const navigationEvents = ['turbo:load', 'turbo:render', 'turbo:frame-load'];
+  // GitHub can enter Actions without a document load. Keep only a lightweight
+  // bootstrap on other pages, then hand navigation to the existing observer.
+  const observer = new MutationObserver(() => maybeInitialize());
+  const maybeInitialize = (): void => {
+    if (initialized || !/^\/[^/]+\/[^/]+\/actions(?:\/|$)/.test(location.pathname)) return;
+    initialized = true;
+    observer.disconnect();
+    navigationEvents.forEach(event => document.removeEventListener(event, maybeInitialize));
+    initThemeDetection();
+    init();
+  };
+  observer.observe(document.documentElement, { childList: true, subtree: true });
+  navigationEvents.forEach(event => document.addEventListener(event, maybeInitialize));
+  maybeInitialize();
 })();
 
 function initThemeDetection(): void {

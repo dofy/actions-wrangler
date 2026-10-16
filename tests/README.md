@@ -11,6 +11,11 @@ node --test tests/url-matching.cjs
 script with a Chrome API stub. It covers `.yml`, `.yaml`, query strings, run pages,
 and unrelated URLs. Pattern checks are not a substitute for Chrome's loader.
 
+`tests/workflow-entry-navigation.js` starts outside Actions and clicks into it
+using same-document navigation. It verifies initialization without a refresh,
+leaving and returning, the DOM-observer fallback, and no duplicate controls.
+Run in a fresh CLI session as below.
+
 To run the browser regression with Playwright CLI (from the repository root):
 
 ```sh
