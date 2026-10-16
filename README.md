@@ -104,7 +104,7 @@ These tests use GitHub-shaped fixtures and mocked Chrome APIs. Native OS IME can
 
 - **storage:** Store personal pins and settings using Chrome Sync.
 - **tabs:** Update the extension icon for the current page.
-- **Content scripts:** Enhance repository Actions pages on `github.com`.
+- **Content scripts:** Load a lightweight entry listener on `github.com` so navigation from other GitHub pages into Actions works without refreshing. The Actions interface starts only on repository Actions pages.
 
 No GitHub token is required. Automatic expansion activates GitHub's existing “Show more workflows” control using your current browser session. See [PRIVACY.md](PRIVACY.md) for the upstream privacy policy.
 
