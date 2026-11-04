@@ -1,9 +1,12 @@
 // Prefer semantic navigation landmarks; GitHub's React and legacy sidebars coexist.
 export const WORKFLOW_LINK = 'a[href*="/actions/workflows/"]';
-export const WORKFLOW_ROW = `li:has(${WORKFLOW_LINK}):not(:has(li ${WORKFLOW_LINK}))`;
+export const SIDEBAR_ITEM = 'li, [data-component="Sidebar.Item"]';
+export const WORKFLOW_ROW = `:is(${SIDEBAR_ITEM}):has(${WORKFLOW_LINK}):not(:has(:is(${SIDEBAR_ITEM}) ${WORKFLOW_LINK}))`;
+export const WORKFLOW_ACTION = ':is([data-component="ActionList.TrailingAction"], [data-component="Sidebar.Action"]):not(.actions-wrangler-action)';
 
 export function getPane(): Element | null {
-  return document.querySelector('[aria-label="Actions workflows"]')
+  return document.querySelector('aside[aria-label="Actions"] nav[aria-label="Workflows"]')
+    || document.querySelector('[aria-label="Actions workflows" i]')
     || document.querySelector('[data-target="split-page-layout.pane"]');
 }
 
@@ -17,7 +20,7 @@ export function getAllWorkflows(): HTMLAnchorElement | null {
 }
 
 export function getWorkflowList(): Element | null {
-  return getPane()?.querySelector(WORKFLOW_LINK)?.closest('ul') || null;
+  return getPane()?.querySelector(WORKFLOW_LINK)?.closest(SIDEBAR_ITEM)?.parentElement || null;
 }
 
 export function isNativePinned(row: Element): boolean {

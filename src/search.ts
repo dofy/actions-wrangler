@@ -1,4 +1,4 @@
-import { WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows } from './sidebar';
+import { SIDEBAR_ITEM, WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows } from './sidebar';
 type Expand = (done: (complete: boolean) => void) => void;
 let query = '';
 let repository = '';
@@ -7,9 +7,9 @@ let repository = '';
 export function setupSearch(expand: Expand): void {
   const repo = location.pathname.split('/').slice(1, 3).join('/');
   if (repo !== repository) { repository = repo; query = ''; }
-  const all = getAllWorkflows()?.closest('li');
+  const all = getAllWorkflows()?.closest(SIDEBAR_ITEM);
   if (!all || document.querySelector('.actions-workflow-search')) return;
-  const wrapper = document.createElement('li');
+  const wrapper = document.createElement(all.tagName === 'LI' ? 'li' : 'div');
   wrapper.className = 'actions-workflow-search';
   wrapper.style.cssText = 'list-style:none;padding:8px;';
   const field = document.createElement('div');

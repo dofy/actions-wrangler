@@ -77,3 +77,8 @@ regression; authenticated live Chrome testing is still required.
 `tests/workflow-sections.js` checks alphabetical favorites, native pin priority in
 both regions, restoring the original order after unpinning, and hiding the divider
 when search or an empty favorites region leaves only one visible region.
+
+`tests/workflow-sidebar-layout.js` covers the newer `Sidebar.Item` / `Sidebar.Action`
+components with div-based workflow rows and separate Workflows/Management navigation.
+It checks overview and detail routes, existing numeric favorites, pagination,
+search/clear, collapsed sidebars, persistence, and React sidebar replacement.

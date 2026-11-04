@@ -11,12 +11,12 @@ This is a community fork of [kldavis4/actions-wrangler](https://github.com/kldav
 
 - **Personal favorites:** Use the gray star before each workflow name to save favorites without changing GitHub's native pins. No five-pin limit; preferences are saved per repository. Filled stars indicate favorites.
 - **Two-section layout:** Favorites appear above a divider. GitHub-native pins come first within each section; other favorites sort alphabetically, while workflows in the lower section keep GitHub's original order.
-- **Current GitHub sidebar:** Supports the updated Actions navigation, with aligned multiline names, native hover styling, and rounded outer edges.
+- **Current GitHub sidebar:** Supports legacy lists, React navigation, and the newer collapsible Sidebar layout. Controls hide when the sidebar is collapsed and return when expanded. Pin buttons fill their right-hand column, and selection markers stay at the row edge after navigation.
 - **Workflow search:** Match names or filenames, ignoring case. The first search loads remaining workflow pages automatically, with progress, match counts, incomplete-result feedback, and retry.
 - **Workflow-page support:** Personal pins work on `.yaml` and `.yml` workflow pages and are restored when GitHub replaces the sidebar during navigation.
 - **Pagination support:** Keep pinned shortcuts visible even when their real rows are behind “Show more workflows.”
 - **Input safeguards:** Preserve scroll position, typing focus, and selection during search loading; pause filtering and further pagination during IME composition.
-- **Manual and automatic expansion:** Expand the list with the button beside “All workflows,” or enable Auto Unfold in the popup.
+- **Manual and automatic expansion:** Expand the list with the arrow button fixed at the right of “All workflows,” or enable Auto Unfold in the popup.
 - **Chrome Sync:** Sync preferences across your devices when browser sync is enabled. This is not a strictly local-only storage mode.
 
 ## Install

@@ -27,6 +27,19 @@ async (page) => {
       && document.querySelectorAll('.actions-workflow-search').length === 1;
   });
   await page.goto(root); await wire(); await inject(); await check();
+  // GitHub reconciliation may put the injected control before the native link
+  // and discard the link's inline flex style. It must still render on the right.
+  await page.evaluate(() => {
+    const button = document.querySelector('.actions-unfold-trigger');
+    button.parentElement.prepend(button);
+    button.parentElement.querySelector('a').style.removeProperty('flex');
+  });
+  const position = await page.evaluate(() => {
+    const button = document.querySelector('.actions-unfold-trigger');
+    const link = button.parentElement.querySelector('a');
+    return { button: button.getBoundingClientRect().toJSON(), link: link.getBoundingClientRect().toJSON() };
+  });
+  if (position.button.left < position.link.right || position.button.width !== 32) throw new Error('Unfold button left its right-hand column');
   if (await page.getByRole('button',{name:'Unpin Alpha (extension)',exact:true}).count() !== 1) throw new Error('Legacy numeric pin lost');
   const search = page.getByRole('searchbox');
   await search.fill('hidden.yaml');

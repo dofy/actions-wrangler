@@ -1,4 +1,4 @@
-import { WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows, getWorkflowList, isNativePinned, workflowId as getWorkflowId } from './sidebar';
+import { SIDEBAR_ITEM, WORKFLOW_ACTION, WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows, getWorkflowList, isNativePinned, workflowId as getWorkflowId } from './sidebar';
 import { setupSearch, refreshSearch } from './search';
 
 // Actions Wrangler - Tame your GitHub Actions
@@ -14,13 +14,8 @@ const FILLED_STAR = 'M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 
 const OUTLINE_STAR = 'M8 .25a.75.75 0 0 1 .673.418l1.882 3.815 4.21.612a.75.75 0 0 1 .416 1.279l-3.046 2.97.719 4.192a.751.751 0 0 1-1.088.791L8 12.347l-3.766 1.98a.75.75 0 0 1-1.088-.79l.72-4.194L.818 6.374a.75.75 0 0 1 .416-1.28l4.21-.611L7.327.668A.75.75 0 0 1 8 .25Zm0 2.445L6.615 5.5a.75.75 0 0 1-.564.41l-3.097.45 2.24 2.184a.75.75 0 0 1 .216.664l-.528 3.084 2.769-1.456a.75.75 0 0 1 .698 0l2.77 1.456-.53-3.084a.75.75 0 0 1 .216-.664l2.24-2.183-3.096-.45a.75.75 0 0 1-.564-.41L8 2.694Z';
 
 const UNFOLD_ICON = `
-  <svg aria-hidden="true" height="16" viewBox="0 0 16 16" version="1.1" width="16" class="octicon Button-visual">
-    <rect fill="currentColor" x="1" y="2" width="14" height="2" rx="1"/>
-    <rect fill="currentColor" x="2" y="5.5" width="7" height="1.5" rx="0.5"/>
-    <rect fill="currentColor" x="2" y="8" width="7" height="1.5" rx="0.5"/>
-    <rect fill="currentColor" x="2" y="10.5" width="7" height="1.5" rx="0.5"/>
-    <rect fill="currentColor" x="12" y="5" width="2" height="5"/>
-    <path fill="currentColor" d="M10 10h6l-3 4z"/>
+  <svg aria-hidden="true" focusable="false" height="16" viewBox="0 0 16 16" width="16" class="octicon Button-visual" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 2v8m-3-3 3 3 3-3M3.5 13.5h9"/>
   </svg>
 `;
 
@@ -64,8 +59,51 @@ function reportTheme(isDark: boolean): void {
 function init(): void {
   const buttonStyles = document.createElement('style');
   buttonStyles.textContent = `
+    :is(li, [data-component="Sidebar.Item"]):has(> .actions-unfold-trigger) { display: flex; }
+    :is(li, [data-component="Sidebar.Item"]):has(> .actions-unfold-trigger) > a {
+      flex: 1; min-width: 0; order: 0;
+      border-top-right-radius: 0; border-bottom-right-radius: 0;
+    }
+    .actions-unfold-trigger {
+      order: 1; flex: 0 0 32px; width: 32px; margin-left: auto;
+      display: inline-flex; align-items: center; justify-content: center; align-self: stretch;
+      padding: 0; border: 0; border-radius: 0 var(--borderRadius-medium, 6px) var(--borderRadius-medium, 6px) 0;
+      background: transparent; color: var(--fgColor-muted, #656d76); cursor: pointer;
+    }
+    .actions-unfold-trigger:hover:not(:disabled) { background: var(--control-transparent-bgColor-hover, rgba(129, 139, 152, .1)); }
+    .actions-unfold-trigger:focus-visible { outline: 2px solid var(--focus-outlineColor, #0969da); outline-offset: -2px; }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) > .actions-wrangler-action {
+      display: flex; align-self: stretch;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) > .actions-wrangler-action > button {
+      height: auto; min-height: 32px; align-self: stretch;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) > [data-component="Sidebar.Action"] {
+      flex: 0 0 32px; width: 32px;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) {
+      position: relative;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) > a[aria-current="page"]::before {
+      display: none;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action):has(> a[aria-current="page"])::before {
+      content: ""; position: absolute; left: -8px; top: 4px; bottom: 4px; width: 4px;
+      border-radius: var(--borderRadius-medium, 6px);
+      background: var(--borderColor-accent-emphasis, #0969da); pointer-events: none;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) > [data-component="Sidebar.Action"] > span {
+      flex: 1; width: 100%;
+    }
+    [data-component="Sidebar.Item"]:has(> .actions-wrangler-action) > [data-component="Sidebar.Action"] button {
+      width: 100%; min-width: 0;
+      border-radius: 0 var(--borderRadius-medium, 6px) var(--borderRadius-medium, 6px) 0;
+    }
+    aside[aria-label="Actions"][data-expanded="false"] :is(.actions-workflow-search, .actions-unfold-trigger, .actions-wrangler-action, .actions-unfold-placeholder, .actions-wrangler-divider) {
+      display: none !important;
+    }
     .actions-wrangler-action { flex-shrink: 0; opacity: .4; }
-    .actions-wrangler-row:hover > .actions-wrangler-action,
+    :is(.actions-wrangler-row, [data-wrangler-id]):hover > .actions-wrangler-action,
     .actions-wrangler-action:focus-within { opacity: 1; }
   `;
   document.head.appendChild(buttonStyles);
@@ -133,7 +171,7 @@ function addUnfoldButton(): void {
     if (!allWorkflowsLink) return;
 
     setupSearch(runExpander);
-    const li = allWorkflowsLink.closest('li');
+    const li = allWorkflowsLink.closest(SIDEBAR_ITEM);
     if (!li || li.querySelector('.actions-unfold-trigger')) return;
 
     li.classList.add('ActionListItem--withActions');
@@ -141,8 +179,7 @@ function addUnfoldButton(): void {
 
     const unfoldBtn = document.createElement('button');
     unfoldBtn.type = 'button';
-    unfoldBtn.className = 'Button Button--iconOnly Button--invisible Button--medium actions-unfold-trigger color-bg-transparent';
-    unfoldBtn.style.cssText = 'flex-shrink:0;padding:6px;border:0;background:transparent;color:inherit;cursor:pointer;';
+    unfoldBtn.className = 'Button Button--iconOnly Button--invisible Button--medium actions-unfold-trigger';
     allWorkflowsLink.style.flex = '1';
     unfoldBtn.setAttribute('aria-label', 'Unfold all workflows');
     unfoldBtn.title = 'Unfold all workflows';
@@ -229,7 +266,7 @@ async function renderPinnedPlaceholders(): Promise<void> {
         lastInserted = existing;
         return;
       }
-      const placeholder = createPlaceholderItem(workflow);
+      const placeholder = createPlaceholderItem(workflow, workflowList);
       if (lastInserted) {
         lastInserted.after(placeholder);
       } else {
@@ -243,12 +280,13 @@ async function renderPinnedPlaceholders(): Promise<void> {
   waitForList();
 }
 
-function createPlaceholderItem(workflow: PinnedWorkflow): HTMLLIElement {
-  const li = document.createElement('li');
+function createPlaceholderItem(workflow: PinnedWorkflow, list: Element): HTMLElement {
+  const li = document.createElement(list.matches('ul, ol') ? 'li' : 'div');
   li.className = 'actions-workflow-list-item ActionListItem ActionListItem--withActions actions-unfold-placeholder';
   li.setAttribute('data-item-id', workflow.id);
   li.setAttribute('data-unfold-placeholder', 'true');
   li.classList.add('actions-wrangler-row');
+  if (!list.matches('ul, ol')) li.setAttribute('data-component', 'Sidebar.Item');
   li.style.cssText = 'display:flex;align-items:center;min-width:0;';
 
   li.innerHTML = `
@@ -285,7 +323,7 @@ function createPinButton(workflowId: string, workflowName: string, isPinned: boo
   button.setAttribute('aria-label', isPinned ? `Unpin ${workflowName} (extension)` : `Pin ${workflowName} (extension)`);
   button.setAttribute('aria-pressed', isPinned ? 'true' : 'false');
   button.setAttribute('data-workflow-id', workflowId);
-  const nativeButton = getPane()?.querySelector<HTMLButtonElement>('[data-component="ActionList.TrailingAction"]:not(.actions-wrangler-action) button[data-component="IconButton"]');
+  const nativeButton = getPane()?.querySelector<HTMLButtonElement>(`${WORKFLOW_ACTION} button[data-component="IconButton"]`);
   if (nativeButton) {
     // Reuse Primer's actual component styles, including hover, active and focus.
     button.className = `${nativeButton.className} actions-unfold-pin`;
@@ -308,11 +346,11 @@ function createPinButton(workflowId: string, workflowName: string, isPinned: boo
 }
 
 function attachPinButton(item: Element, button: HTMLButtonElement): void {
-  const nativeAction = item.querySelector('[data-component="ActionList.TrailingAction"]:not(.actions-wrangler-action)');
-  const template = nativeAction || getPane()?.querySelector('[data-component="ActionList.TrailingAction"]:not(.actions-wrangler-action)');
+  const nativeAction = item.querySelector(WORKFLOW_ACTION);
+  const template = nativeAction || getPane()?.querySelector(WORKFLOW_ACTION);
   const wrapper = document.createElement('span');
   wrapper.className = (template ? Array.from(template.classList).filter(name => name.startsWith('prc-')).join(' ') : '') + ' actions-wrangler-action';
-  if (template) wrapper.setAttribute('data-component', 'ActionList.TrailingAction');
+  if (template?.getAttribute('data-component') === 'ActionList.TrailingAction') wrapper.setAttribute('data-component', 'ActionList.TrailingAction');
   wrapper.style.cssText = 'flex:0 0 32px;width:32px;';
   button.style.width = '100%';
   // The favorite owns the left edge; the native pin owns the right edge.
@@ -334,7 +372,7 @@ function attachPinButton(item: Element, button: HTMLButtonElement): void {
   if (template && !nativeAction) (item as HTMLElement).style.paddingRight = '32px';
 }
 
-async function togglePinFromPlaceholder(workflowId: string, placeholderItem: HTMLLIElement): Promise<void> {
+async function togglePinFromPlaceholder(workflowId: string, placeholderItem: HTMLElement): Promise<void> {
   const pinned = await loadPinned();
   const index = pinned.findIndex(p => p.id === workflowId);
 
@@ -424,7 +462,7 @@ function arrangeWorkflowSections(list: Element): void {
 
   let divider = list.querySelector<HTMLElement>(':scope > .actions-wrangler-divider');
   if (!divider && favorites.length && others.length) {
-    divider = document.createElement('li');
+    divider = document.createElement(list.matches('ul, ol') ? 'li' : 'div');
     divider.className = 'actions-wrangler-divider';
     divider.setAttribute('role', 'separator');
     divider.setAttribute('aria-label', 'Other workflows');
