@@ -1,5 +1,7 @@
 # Workflow Harbor
 
+<img src="assets/icon128.svg" alt="Workflow Harbor logo" width="80" height="80">
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/dofy/actions-wrangler)](https://github.com/dofy/actions-wrangler/releases/latest)
 
@@ -8,6 +10,10 @@ Workflow Harbor helps you search and organize GitHub Actions workflows with pers
 Formerly Actions Wrangler, this is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Download this fork from [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest); the upstream Chrome Web Store listing is a separate distribution.
 
 The interface is available in English and Simplified Chinese and follows your Chrome language.
+
+![Workflow Harbor on a public GitHub Actions page](store-assets/screenshot-en.png)
+
+[查看简体中文界面截图](store-assets/screenshot-zh-CN.png)
 
 ## 中文介绍
 
@@ -30,6 +36,8 @@ Workflow Harbor 帮你快速搜索和整理 GitHub Actions 工作流。你可以
 ## Install
 
 ### From a release — no build tools needed
+
+The latest GitHub Release is v1.2.2 under the former Actions Wrangler branding. Workflow Harbor v1.3.0 has been submitted to the Chrome Web Store and is awaiting review.
 
 1. Download `actions-wrangler-vX.Y.Z.zip` from the [latest release](https://github.com/dofy/actions-wrangler/releases/latest).
 2. Extract it into a permanent directory. The selected directory must contain `manifest.json`.
