@@ -1,11 +1,19 @@
-# Actions Wrangler
+# Workflow Harbor
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/dofy/actions-wrangler)](https://github.com/dofy/actions-wrangler/releases/latest)
 
-Personal workflow pins and search for GitHub Actions. Find workflows by name or filename, keep your favorites in a separate top section, and use them across Actions overview and workflow pages.
+Workflow Harbor helps you search and organize GitHub Actions workflows with personal favorites. Find workflows by name or filename, keep your favorites in a separate top section, and use them across Actions overview and workflow pages.
 
-This is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Download this fork from [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest); the upstream Chrome Web Store listing is a separate distribution.
+Formerly Actions Wrangler, this is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Download this fork from [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest); the upstream Chrome Web Store listing is a separate distribution.
+
+The interface is available in English and Simplified Chinese and follows your Chrome language.
+
+## 中文介绍
+
+Workflow Harbor 帮你快速搜索和整理 GitHub Actions 工作流。你可以按仓库收藏常用工作流、按名称或文件名搜索，并一键加载完整列表。界面会跟随 Chrome 的语言自动显示中文或英文。
+
+本项目是 Actions Wrangler 的独立社区分支，保留原项目的 MIT 许可证与版权声明。
 
 ## Features
 
@@ -27,7 +35,7 @@ This is a community fork of [kldavis4/actions-wrangler](https://github.com/kldav
 2. Extract it into a permanent directory. The selected directory must contain `manifest.json`.
 3. Open `chrome://extensions` and enable **Developer mode**.
 4. Click **Load unpacked** and select the extracted directory.
-5. Disable any other edition of Actions Wrangler, then refresh your GitHub tabs.
+5. Disable any other edition of Workflow Harbor or Actions Wrangler, then refresh your GitHub tabs.
 
 Keep the extracted directory: Chrome loads the extension from those files. Release assets include `SHA256SUMS.txt` for checksum verification.
 
@@ -93,7 +101,7 @@ npm run typecheck                   # TypeScript checks
 npm run build                       # Bundle scripts, generate icons, copy static files
 node --test tests/url-matching.cjs   # URL patterns and background-script checks
 npm run watch                       # Rebuild scripts on changes
-npm run package                     # Build and create actions-wrangler.zip
+npm run package                     # Build and create workflow-harbor.zip
 ```
 
 Browser regression scripts cover the updated sidebar, section sorting, navigation, pinning, search, pagination, scrolling, focus, and IME events. See [tests/README.md](tests/README.md) for commands and scope.
@@ -106,7 +114,7 @@ These tests use GitHub-shaped fixtures and mocked Chrome APIs. Native OS IME can
 - **tabs:** Update the extension icon for the current page.
 - **Content scripts:** Load a lightweight entry listener on `github.com` so navigation from other GitHub pages into Actions works without refreshing. The Actions interface starts only on repository Actions pages.
 
-No GitHub token is required. Automatic expansion activates GitHub's existing “Show more workflows” control using your current browser session. See [PRIVACY.md](PRIVACY.md) for the upstream privacy policy.
+No GitHub token is required. Automatic expansion activates GitHub's existing “Show more workflows” control using your current browser session. See [PRIVACY.md](PRIVACY.md) for this fork’s privacy policy.
 
 ## Upstream contributions
 

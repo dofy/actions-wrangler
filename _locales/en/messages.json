@@ -1,0 +1,8 @@
+{
+  "extensionName": {
+    "message": "Workflow Harbor"
+  },
+  "extensionDescription": {
+    "message": "Find and organize your favorite GitHub Actions workflows"
+  }
+}

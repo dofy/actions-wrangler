@@ -1,3 +1,10 @@
+import { t } from './i18n';
+
+document.querySelectorAll<HTMLElement>('[data-i18n]').forEach(el => {
+  el.textContent = t(el.dataset.i18n as Parameters<typeof t>[0]);
+});
+document.documentElement.lang = /^zh/i.test(chrome.i18n?.getUILanguage?.() || '') ? 'zh-CN' : 'en';
+
 // Actions Wrangler - Popup script
 
 const autoUnfoldToggle = document.getElementById('autoUnfold') as HTMLInputElement;
@@ -18,6 +25,7 @@ darkModeQuery.addEventListener('change', (e) => reportTheme(e.matches));
 // Load current state
 chrome.storage.sync.get(['autoUnfold'], (result) => {
   autoUnfoldToggle.checked = result.autoUnfold === true;
+  autoUnfoldToggle.setAttribute('aria-label', t('auto'));
 });
 
 // Save state on toggle
@@ -27,27 +35,27 @@ autoUnfoldToggle.addEventListener('change', () => {
 
 // Reset all pinned workflows
 resetBtn.addEventListener('click', () => {
-  if (!confirm('This will clear all extension-pinned workflows across all repositories. Continue?')) {
+  if (!confirm(t('resetConfirm'))) {
     return;
   }
 
   resetBtn.disabled = true;
-  resetBtn.textContent = 'Resetting...';
+  resetBtn.textContent = t('resetting');
 
   chrome.storage.sync.get(null, (items) => {
     const keysToRemove = Object.keys(items).filter(key => key.startsWith('pinned:'));
 
     if (keysToRemove.length === 0) {
-      statusEl.textContent = 'No pinned workflows to clear';
+      statusEl.textContent = t('noPins');
       resetBtn.disabled = false;
-      resetBtn.textContent = 'Reset All Pinned Workflows';
+      resetBtn.textContent = t('reset');
       return;
     }
 
     chrome.storage.sync.remove(keysToRemove, () => {
-      statusEl.textContent = `Cleared ${keysToRemove.length} repo(s)`;
+      statusEl.textContent = t('cleared', keysToRemove.length);
       resetBtn.disabled = false;
-      resetBtn.textContent = 'Reset All Pinned Workflows';
+      resetBtn.textContent = t('reset');
     });
   });
 });

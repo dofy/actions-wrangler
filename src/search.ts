@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { SIDEBAR_ITEM, WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows } from './sidebar';
 type Expand = (done: (complete: boolean) => void) => void;
 let query = '';
@@ -17,16 +18,16 @@ export function setupSearch(expand: Expand): void {
   const input = document.createElement('input');
   input.type = 'search';
   input.className = 'form-control';
-  input.placeholder = 'Search workflows…';
-  input.setAttribute('aria-label', 'Search workflows by name or filename');
+  input.placeholder = t('search');
+  input.setAttribute('aria-label', t('searchLabel'));
   input.style.width = '100%';
   input.value = query;
   const clear = document.createElement('button');
   clear.type = 'button';
   clear.className = 'actions-workflow-search-clear';
   clear.textContent = 'Esc';
-  clear.setAttribute('aria-label', 'Clear workflow search');
-  clear.title = 'Clear search (Esc)';
+  clear.setAttribute('aria-label', t('clear'));
+  clear.title = t('clearTitle');
   const styles = document.createElement('style');
   styles.textContent = `
     .actions-workflow-search input::-webkit-search-cancel-button { display: none; }
@@ -51,7 +52,7 @@ export function setupSearch(expand: Expand): void {
   const retry = document.createElement('button');
   retry.type = 'button';
   retry.className = 'btn btn-sm';
-  retry.textContent = 'Retry loading';
+  retry.textContent = t('retry');
   retry.hidden = true;
   wrapper.append(styles, field, status, retry);
   all.after(wrapper);
@@ -89,9 +90,9 @@ export function setupSearch(expand: Expand): void {
       divider.hidden = !visible('favorites') || !visible('others');
       divider.style.display = divider.hidden ? 'none' : 'block';
     });
-    status.textContent = !term ? '' : loading ? `Loading all workflows… (${count} matches so far)`
-      : !complete ? `${count} matches in loaded workflows. Full list unavailable.`
-      : count ? `${count} matching workflow${count === 1 ? '' : 's'}` : 'No matching workflows';
+    status.textContent = !term ? '' : loading ? t('loading', count)
+      : !complete ? t('incomplete', count)
+      : count ? t(count === 1 ? 'matchingOne' : 'matchingMany', count) : t('noMatches');
     retry.hidden = !term || loading || complete || !attempted;
   };
   const load = (): void => {

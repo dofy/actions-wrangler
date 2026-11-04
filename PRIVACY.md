@@ -1,45 +1,27 @@
-# Privacy Policy for Actions Wrangler
+# Workflow Harbor Privacy Policy
 
-**Last updated:** January 2025
+Last updated: November 4, 2026
 
-## Overview
+Workflow Harbor is maintained by Seven Yu. It helps users search and organize GitHub Actions workflows. This policy applies to the Workflow Harbor browser extension.
 
-Actions Wrangler is a browser extension that helps you manage GitHub Actions workflows. This privacy policy explains how the extension handles your data.
+## Information used
 
-## Data Collection
+When you visit GitHub, the extension checks the page URL to determine whether it is a repository Actions page. On Actions pages it reads the repository identifier, workflow names, workflow URLs, and the page elements needed to display favorites, search, and loading controls. Search queries are used in the current page and are not saved across page reloads.
 
-**Actions Wrangler does not collect any personal data.**
+When you choose a favorite, the extension stores its repository, name, URL, and identifier, along with your extension settings, using Chrome's `storage.sync` API. Google may synchronize this data to your signed-in Chrome profile according to your Chrome sync settings and Google's policies. Your workflow choices and settings stay stored until you remove them or clear the extension's stored data. Use the popup's “Reset All Pinned Workflows” button to remove this extension's saved favorites across repositories.
 
-The extension does not:
-- Track your browsing activity
-- Collect analytics or usage data
-- Send any data to external servers
-- Use cookies or tracking technologies
+## Sharing and network requests
 
-## Data Storage
-
-The extension stores the following data locally on your device using Chrome's built-in storage API:
-
-- **Pinned workflows** - The workflows you've pinned in each repository
-- **Settings** - Your preferences (e.g., auto-unfold toggle)
-
-This data is synced across your devices via your Chrome account if you have Chrome sync enabled. This sync is handled entirely by Chrome and no data passes through any third-party servers.
+The extension does not send your workflow choices, page content, search queries, or browsing history to the developer or an analytics service. When expanding a workflow list, it activates GitHub's existing pagination controls; the resulting requests are made to GitHub in your browser session. GitHub and Google handle data under their own policies.
 
 ## Permissions
 
-The extension requires these permissions:
+- **github.com site access:** Detect navigation into Actions and read and modify Actions page elements to provide the features described above.
+- **storage:** Save favorites and settings using Chrome storage and synchronization.
+- **tabs:** Read tab URLs to select the active or inactive toolbar icon.
 
-- **storage** - To save your pinned workflows and settings
-- **tabs** - To update the extension icon based on the current page
+Workflow Harbor's use of information received from Google APIs adheres to the Chrome Web Store User Data Policy, including its Limited Use requirements.
 
-## Third Parties
+## Contact and changes
 
-This extension does not share any data with third parties.
-
-## Changes to This Policy
-
-Any changes to this privacy policy will be posted on this page with an updated date.
-
-## Contact
-
-If you have questions about this privacy policy, please open an issue on the [GitHub repository](https://github.com/kldavis4/actions-wrangler).
+Questions or requests: open an issue at https://github.com/dofy/actions-wrangler/issues. Policy changes will be posted in this file with an updated date.

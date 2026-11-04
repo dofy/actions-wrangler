@@ -1,3 +1,4 @@
+import { t } from './i18n';
 import { SIDEBAR_ITEM, WORKFLOW_ACTION, WORKFLOW_LINK, WORKFLOW_ROW, getPane, getAllWorkflows, getWorkflowList, isNativePinned, workflowId as getWorkflowId } from './sidebar';
 import { setupSearch, refreshSearch } from './search';
 
@@ -181,8 +182,8 @@ function addUnfoldButton(): void {
     unfoldBtn.type = 'button';
     unfoldBtn.className = 'Button Button--iconOnly Button--invisible Button--medium actions-unfold-trigger';
     allWorkflowsLink.style.flex = '1';
-    unfoldBtn.setAttribute('aria-label', 'Unfold all workflows');
-    unfoldBtn.title = 'Unfold all workflows';
+    unfoldBtn.setAttribute('aria-label', t('unfold'));
+    unfoldBtn.title = t('unfold');
     unfoldBtn.innerHTML = UNFOLD_ICON;
 
     unfoldBtn.addEventListener('click', (e) => {
@@ -320,7 +321,7 @@ function createPinButton(workflowId: string, workflowName: string, isPinned: boo
   const button = document.createElement('button');
   button.type = 'button';
   button.className = 'Button Button--iconOnly Button--invisible Button--medium actions-unfold-pin color-bg-transparent';
-  button.setAttribute('aria-label', isPinned ? `Unpin ${workflowName} (extension)` : `Pin ${workflowName} (extension)`);
+  button.setAttribute('aria-label', isPinned ? t('unpin', workflowName) : t('pin', workflowName));
   button.setAttribute('aria-pressed', isPinned ? 'true' : 'false');
   button.setAttribute('data-workflow-id', workflowId);
   const nativeButton = getPane()?.querySelector<HTMLButtonElement>(`${WORKFLOW_ACTION} button[data-component="IconButton"]`);
@@ -465,7 +466,7 @@ function arrangeWorkflowSections(list: Element): void {
     divider = document.createElement(list.matches('ul, ol') ? 'li' : 'div');
     divider.className = 'actions-wrangler-divider';
     divider.setAttribute('role', 'separator');
-    divider.setAttribute('aria-label', 'Other workflows');
+    divider.setAttribute('aria-label', t('others'));
     divider.style.cssText = 'list-style:none;height:1px;margin:8px;border-top:1px solid var(--borderColor-default, #d1d9e0);';
   }
   const ordered: Element[] = [...favorites, ...(divider ? [divider] : []), ...others];
@@ -493,7 +494,7 @@ async function togglePin(
 
   if (isPinned) {
     pinned.splice(index, 1);
-    button.setAttribute('aria-label', `Pin ${workflowName} (extension)`);
+    button.setAttribute('aria-label', t('pin', workflowName));
     button.setAttribute('aria-pressed', 'false');
 
     if (svg) svg.style.fill = 'currentColor';
@@ -504,7 +505,7 @@ async function togglePin(
       name: workflowName,
       href: workflowHref
     });
-    button.setAttribute('aria-label', `Unpin ${workflowName} (extension)`);
+    button.setAttribute('aria-label', t('unpin', workflowName));
     button.setAttribute('aria-pressed', 'true');
 
     if (svg) svg.style.fill = 'currentColor';

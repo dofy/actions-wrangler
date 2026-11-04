@@ -1,13 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <!-- Capital A (light grey for dark mode inactive) -->
-  <path fill="#6e7681" d="M64 8L18 120h20l10-24h60l10 24h20L64 8zm0 32l20 48H44l20-48z"/>
-
-  <!-- Lasso rope loop -->
-  <ellipse cx="64" cy="56" rx="54" ry="38" fill="none" stroke="#6e7681" stroke-width="7" stroke-linecap="round"/>
-
-  <!-- Lasso rope tail/handle -->
-  <path fill="none" stroke="#6e7681" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" d="M114 80 Q 128 95, 120 110 Q 112 122, 96 118"/>
-
-  <!-- Rope texture -->
-  <ellipse cx="64" cy="56" rx="54" ry="38" fill="none" stroke="#484f58" stroke-width="2" stroke-dasharray="6 10" stroke-linecap="round"/>
+  <rect x="4" y="4" width="120" height="120" rx="28" fill="#8b949e"/>
+  <path d="M31 39h45M31 64h34M31 89h45" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round"/>
+  <path d="m88 49 5.1 10.3 11.4 1.7-8.2 8 1.9 11.4-10.2-5.4-10.2 5.4 1.9-11.4-8.2-8 11.4-1.7z" fill="#fff" stroke="#8b949e" stroke-width="4" stroke-linejoin="round"/>
 </svg>

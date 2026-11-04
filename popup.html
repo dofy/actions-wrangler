@@ -149,77 +149,69 @@
   </style>
 </head>
 <body>
-  <h1>Actions Wrangler</h1>
+  <h1>Workflow Harbor</h1>
 
   <div class="toggle-row">
-    <span>Auto Unfold</span>
+    <span data-i18n="auto">Auto Unfold</span>
     <label class="toggle">
       <input type="checkbox" id="autoUnfold">
       <span class="slider"></span>
     </label>
   </div>
-  <div class="help-text">Automatically expand all workflows on page load</div>
+  <div class="help-text" data-i18n="autoHelp">Automatically expand all workflows on page load</div>
 
   <div class="divider"></div>
 
-  <button class="reset-btn" id="resetBtn">Reset All Pinned Workflows</button>
-  <div class="help-text" style="margin-top: 8px;">Clears all extension-pinned workflows across all repos</div>
+  <button class="reset-btn" id="resetBtn" data-i18n="reset">Reset All Pinned Workflows</button>
+  <div class="help-text" style="margin-top: 8px;" data-i18n="resetHelp">Clears all extension-pinned workflows across all repos</div>
 
   <div class="status" id="status"></div>
 
   <div class="changelog">
     <div class="changelog-header" id="changelogToggle">
-      <span>Changelog</span>
+      <span data-i18n="changelog">Changelog</span>
       <span class="changelog-arrow" id="changelogArrow"></span>
     </div>
     <div class="changelog-content" id="changelogContent">
+      <div class="version"><span class="version-number">v1.3.0</span><ul>
+        <li data-i18n="v130a">Choose English or Chinese automatically from the browser language</li>
+        <li data-i18n="v130b">New Workflow Harbor name and icon</li>
+      </ul></div>
       <div class="version">
         <span class="version-number">v1.2.2</span>
         <ul>
-          <li>Support the new collapsible GitHub Actions sidebar</li>
-          <li>Keep favorites, search and pagination working across sidebar layouts</li>
-          <li>Align native pin buttons and selection markers after navigation</li>
-          <li>Keep the unfold button on the right with a simpler arrow icon</li>
+          <li data-i18n="v122a">Support the new collapsible GitHub Actions sidebar</li>
+          <li data-i18n="v122b">Keep favorites, search and pagination working across sidebar layouts</li>
+          <li data-i18n="v122c">Align native pin buttons and selection markers after navigation</li>
+          <li data-i18n="v122d">Keep the unfold button on the right with a simpler arrow icon</li>
         </ul>
       </div>
       <div class="version">
         <span class="version-number">v1.2.1</span>
         <ul>
-          <li>Activate automatically when navigating into Actions without a page refresh</li>
-          <li>Esc clear button appears only while search has text</li>
-          <li>Keep search focus after clearing</li>
-          <li>Updated popup changelog through v1.2.1</li>
+          <li data-i18n="v121a">Activate automatically when navigating into Actions without a page refresh</li>
+          <li data-i18n="v121b">Esc clear button appears only while search has text</li>
+          <li data-i18n="v121c">Keep search focus after clearing</li>
+          <li data-i18n="v121d">Updated popup changelog through v1.2.1</li>
         </ul>
       </div>
       <div class="version">
         <span class="version-number">v1.2.0</span>
         <ul>
-          <li>Support the updated GitHub Actions sidebar</li>
-          <li>Gray favorite stars before workflow names</li>
-          <li>Separate favorites and other workflows</li>
-          <li>Native pins first in each section; other favorites sorted alphabetically</li>
-          <li>Native hover styling and rounded outer edges</li>
+          <li data-i18n="v120a">Support the updated GitHub Actions sidebar</li>
+          <li data-i18n="v120b">Gray favorite stars before workflow names</li>
+          <li data-i18n="v120c">Separate favorites and other workflows</li>
+          <li data-i18n="v120d">Native pins first in each section; other favorites sorted alphabetically</li>
+          <li data-i18n="v120e">Native hover styling and rounded outer edges</li>
         </ul>
       </div>
       <div class="version">
         <span class="version-number">v1.1.0</span>
         <ul>
-          <li>Search workflows by name or filename</li>
-          <li>Automatic pagination during search</li>
-          <li>Workflow-page pinning and navigation fixes</li>
-          <li>Search scroll, focus, and IME safeguards</li>
-        </ul>
-      </div>
-      <div class="version">
-        <span class="version-number">v1.0</span>
-        <ul>
-          <li>Unlimited workflow pinning (star icon)</li>
-          <li>Instant pinned workflow placeholders</li>
-          <li>Manual unfold button</li>
-          <li>Auto unfold option</li>
-          <li>Automatic light/dark mode icons</li>
-          <li>Per-repository pin storage</li>
-          <li>Chrome sync support</li>
+          <li data-i18n="v110a">Search workflows by name or filename</li>
+          <li data-i18n="v110b">Automatic pagination during search</li>
+          <li data-i18n="v110c">Workflow-page pinning and navigation fixes</li>
+          <li data-i18n="v110d">Search scroll, focus, and IME safeguards</li>
         </ul>
       </div>
     </div>
