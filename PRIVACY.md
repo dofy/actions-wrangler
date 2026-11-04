@@ -6,7 +6,7 @@ Workflow Harbor is maintained by Seven Yu. It helps users search and organize Gi
 
 ## Information used
 
-When you visit GitHub, the extension checks the page URL to determine whether it is a repository Actions page. On Actions pages it reads the repository identifier, workflow names, workflow URLs, and the page elements needed to display favorites, search, and loading controls. Search queries are used in the current page and are not saved across page reloads.
+The extension checks open tab URLs locally to determine whether each tab is a GitHub Actions page and display the appropriate toolbar icon. It does not record a browsing history or send those tab URLs to the developer. When you visit GitHub, a lightweight listener detects navigation into Actions pages. On Actions pages it reads the repository identifier, workflow names, workflow URLs, and the page elements needed to display favorites, search, and loading controls. Search queries are used in the current page and are not saved across page reloads.
 
 When you choose a favorite, the extension stores its repository, name, URL, and identifier, along with your extension settings, using Chrome's `storage.sync` API. Google may synchronize this data to your signed-in Chrome profile according to your Chrome sync settings and Google's policies. Your workflow choices and settings stay stored until you remove them or clear the extension's stored data. Use the popup's “Reset All Pinned Workflows” button to remove this extension's saved favorites across repositories.
 
