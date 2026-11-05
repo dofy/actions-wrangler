@@ -1,11 +1,12 @@
 # Workflow Harbor
 
+[![Chrome Web Store](https://img.shields.io/badge/Chrome_Web_Store-Install-4285F4)](https://chromewebstore.google.com/detail/workflow-harbor/kipknnkedgalmljbomlmmpldeifkaeph)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 [![Latest release](https://img.shields.io/github/v/release/dofy/actions-wrangler)](https://github.com/dofy/actions-wrangler/releases/latest)
 
 Workflow Harbor helps you search and organize GitHub Actions workflows with personal favorites. Find workflows by name or filename, keep your favorites in a separate top section, and use them across Actions overview and workflow pages.
 
-Formerly Actions Wrangler, this is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Download this fork from [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest); the upstream Chrome Web Store listing is a separate distribution.
+Formerly Actions Wrangler, this is a community fork of [kldavis4/actions-wrangler](https://github.com/kldavis4/actions-wrangler), with workflow-page pinning fixes and a searchable sidebar. Install Workflow Harbor from the [Chrome Web Store](https://chromewebstore.google.com/detail/workflow-harbor/kipknnkedgalmljbomlmmpldeifkaeph). Manual installation is also available through [GitHub Releases](https://github.com/dofy/actions-wrangler/releases/latest).
 
 The interface is available in English and Simplified Chinese and follows your Chrome language.
 
@@ -13,7 +14,7 @@ The interface is available in English and Simplified Chinese and follows your Ch
 
 Workflow Harbor 帮你快速搜索和整理 GitHub Actions 工作流。你可以按仓库收藏常用工作流、按名称或文件名搜索，并一键加载完整列表。界面会跟随 Chrome 的语言自动显示中文或英文。
 
-本项目是 Actions Wrangler 的独立社区分支，保留原项目的 MIT 许可证与版权声明。
+本项目是 Actions Wrangler 的独立社区分支，保留原项目的 MIT 许可证与版权声明。现已在 [Chrome 应用商店](https://chromewebstore.google.com/detail/workflow-harbor/kipknnkedgalmljbomlmmpldeifkaeph) 公开发布，可直接安装。
 
 ## Features
 
@@ -28,6 +29,12 @@ Workflow Harbor 帮你快速搜索和整理 GitHub Actions 工作流。你可以
 - **Chrome Sync:** Sync preferences across your devices when browser sync is enabled. This is not a strictly local-only storage mode.
 
 ## Install
+
+### From the Chrome Web Store — recommended
+
+Workflow Harbor is now publicly available on the [Chrome Web Store](https://chromewebstore.google.com/detail/workflow-harbor/kipknnkedgalmljbomlmmpldeifkaeph). Click **Add to Chrome** to install; updates are delivered automatically by Chrome.
+
+Disable any other edition of Workflow Harbor or Actions Wrangler, then refresh your GitHub tabs.
 
 ### From a release — no build tools needed
 
@@ -64,7 +71,7 @@ npm run build
 
 Then click **Reload** on the extension card and refresh your GitHub tabs. Keep the same installation directory to preserve the unpacked extension's identity and saved preferences.
 
-The Web Store edition and this unpacked fork have separate storage. Personal pins are not automatically migrated between them.
+The Chrome Web Store installation and unpacked installations have separate storage. Personal pins are not automatically migrated between them.
 
 ## Usage
 
